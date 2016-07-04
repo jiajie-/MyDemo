@@ -1,0 +1,15 @@
+<FrameLayout
+    android:id="@+id/gallery_fragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GalleryFragment">
+
+    <TextView
+        android:id="@+id/tv_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="I am Gallery"/>
+
+</FrameLayout>
