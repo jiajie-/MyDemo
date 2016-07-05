@@ -194,13 +194,12 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "onNavigationItemSelected: nav_tools");
                 break;
 
-            case R.id.nav_share:
-                Log.d(TAG, "onNavigationItemSelected: nav_share");
+            case R.id.nav_exit:
+                Log.d(TAG, "onNavigationItemSelected: nav_exit");
+                //TODO logout account and return login
+
                 break;
 
-            case R.id.nav_send:
-                Log.d(TAG, "onNavigationItemSelected: nav_send");
-                break;
             default:
                 break;
         }
