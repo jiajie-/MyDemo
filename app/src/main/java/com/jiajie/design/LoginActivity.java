@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "test@qq.com:11111111", "bar@example.com:world"
+            "test@qq.com:11111112", "bar@example.com:world"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -66,14 +66,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
 
     // UI references.
+    private TextInputLayout mEmailLayout;
     private ClearAutoCompleteTextView mEmailView;
+    private TextInputLayout mPasswordLayout;
     private ClearEditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
 
-    //layout
-    private TextInputLayout mPasswordLayout;
-    private TextInputLayout mEmailLayout;
     //watchers
     private PasswordTextWatcher mValidPasswordTextWatcher;
     private EmailTextWatcher mEmailTextWatcher;
@@ -113,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.btn_sign_in);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+//        mProgressView = findViewById(R.id.login_progress);
 
         //if an account exist
         SharedPreferences sharedPreferences =
@@ -237,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
+//            showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute(false);
         }
@@ -385,7 +384,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             Log.e(TAG, "onPostExecute: " + success);
             mAuthTask = null;
-            showProgress(false);
+//            showProgress(false);
 
             if (success) {
                 //login successfully
@@ -417,7 +416,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showProgress(false);
+//            showProgress(false);
         }
     }
 }
