@@ -13,5 +13,6 @@
     <dimen name="fab_margin_bottom">0.1dp</dimen>
     <dimen name="fab_shadow_normal">6dp</dimen>
     <dimen name="fab_shadow_pressed">12dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

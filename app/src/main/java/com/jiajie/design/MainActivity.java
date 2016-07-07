@@ -1,5 +1,7 @@
 package com.jiajie.design;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +26,7 @@ import android.view.View;
 import com.jiajie.design.api.GankService;
 import com.jiajie.design.api.SearchResponse;
 import com.jiajie.design.api.SearchResult;
+import com.jiajie.design.dummy.DummyContent;
 
 import java.util.List;
 
@@ -30,9 +34,10 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class MainActivity extends AppCompatActivity
-        implements CameraFragment.OnFragmentInteractionListener,
-        GalleryFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        CameraFragment.CameraInteractionListener,
+        GalleryFragment.GalleryInteractionListener,
+        SearchFragment.SearchInteractionListener {
 
     private static final String TAG = "CodeLabActivity";
 
@@ -44,15 +49,18 @@ public class MainActivity extends AppCompatActivity
     CollapsingToolbarLayout collapsingToolbarLayout;
     NavigationView navigationView;
 
-    static final String cameraTag = "CAMERA";
-    static final String galleryTag = "GALLERY";
+    static final String cameraTag = "Camera";
+    static final String galleryTag = "Gallery";
+    static final String searchTag = "Search";
 
     //fragments
+    FragmentManager mFragmentManager;
     CameraFragment mCameraFragment;
     GalleryFragment mGalleryFragment;
-    FragmentManager mFragmentManager;
+    SearchFragment mSearchFragment;
 
     Fragment mCurrentFragment;
+    String mLastFragmentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,34 +92,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                showSnackBar();
-                GankService.getGankApi().search("all", 3, 1)
-                        .enqueue(new Callback<SearchResponse<SearchResult>>() {
-                            @Override
-                            public void onResponse(Response<SearchResponse<SearchResult>> response
-                                    , Retrofit retrofit) {
-                                if (response.body() != null) {
-                                    SearchResponse<SearchResult> gank = response.body();
-                                    Log.d(TAG, gank.toString());
-
-                                    List<SearchResult> results = gank.getResults();
-
-                                    for (SearchResult result : results) {
-                                        Log.i(TAG, result.toString());
-                                    }
-
-                                } else {
-                                    Log.d(TAG, "onResponse: response.body()==null");
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(Throwable t) {
-                                t.printStackTrace();
-                            }
-                        });
-
+                showSnackBar();
             }
         });
 
@@ -125,7 +106,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
         setSupportActionBar(toolbar);
-        collapsingToolbarLayout.setTitle("Hello World!");
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeButtonEnabled(true);
@@ -145,9 +125,11 @@ public class MainActivity extends AppCompatActivity
                 //all fragments
                 mCameraFragment = CameraFragment.newInstance("1", "2");
                 mCurrentFragment = mCameraFragment;
+                mLastFragmentTag = mCurrentFragment.getTag();
                 FragmentTransaction transaction = mFragmentManager.beginTransaction();
                 // 将该 Fragment 添加到“fragment_container”FrameLayout 中
                 transaction.add(R.id.fragment_container, mCameraFragment, cameraTag).commit();
+                collapsingToolbarLayout.setTitle(mCameraFragment.getTag());
             }
 
         }
@@ -197,10 +179,26 @@ public class MainActivity extends AppCompatActivity
                 }).show();
     }
 
+    private void afterCloseSearch() {
+        //close searchFragment and add lastFragment back
+        Log.i(TAG, "afterCloseSearch: mCurrentFragment:" + mCurrentFragment.getTag());
+        Log.i(TAG, "afterCloseSearch: mLastFragmentTag:" + mLastFragmentTag);
+
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+
+        Fragment lastFragment = mFragmentManager.findFragmentByTag(mLastFragmentTag);
+
+        transaction.remove(mCurrentFragment).show(lastFragment).commit();
+        mCurrentFragment = lastFragment;
+        mLastFragmentTag = mCurrentFragment.getTag();
+        collapsingToolbarLayout.setTitle(mLastFragmentTag);
+    }
+
     /** Swaps fragments in the menu_main content view */
     private void switchContent(int id) {
+        mLastFragmentTag = mCurrentFragment.getTag();
+
         Fragment toFragment = null;
-        String title = "";
         String tag = "";
         // Highlight the selected item, update the title, and close the drawer
         navigationView.setCheckedItem(id);
@@ -208,8 +206,6 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_camera:
-                Log.d(TAG, "onNavigationItemSelected: nav_camera");
-                title = "Camera";
                 if (mCameraFragment == null) {
                     mCameraFragment = CameraFragment.newInstance("1", "2");
                 }
@@ -218,8 +214,6 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_gallery:
-                Log.d(TAG, "onNavigationItemSelected: nav_gallery");
-                title = "Gallery";
                 if (mGalleryFragment == null) {
                     mGalleryFragment = GalleryFragment.newInstance("3", "4");
                 }
@@ -228,17 +222,22 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_slideshow:
-                Log.d(TAG, "onNavigationItemSelected: nav_slideshow");
                 break;
 
             case R.id.nav_tools:
-                Log.d(TAG, "onNavigationItemSelected: nav_tools");
                 break;
 
             case R.id.nav_exit:
-                Log.d(TAG, "onNavigationItemSelected: nav_exit");
                 //TODO logout account and return login
+                break;
 
+            case R.id.action_search:
+                Log.d(TAG, "switchContent: action_search");
+                if (mSearchFragment == null) {
+                    mSearchFragment = SearchFragment.newInstance(1);
+                }
+                tag = searchTag;
+                toFragment = mSearchFragment;
                 break;
 
             default:
@@ -246,6 +245,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (toFragment == null || mCurrentFragment == toFragment) {
+            Log.e(TAG, "switchContent: same fragment");
             return;
         }
 
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity
         transaction.commit();
         mCurrentFragment = toFragment;
 
-        collapsingToolbarLayout.setTitle(title);
+        collapsingToolbarLayout.setTitle(tag);
     }
 
     @Override
@@ -291,7 +291,83 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        setupSearch(menu);
         return true;
+    }
+
+    private void setupSearch(Menu menu) {
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        Log.i(TAG, "getComponentName(): " + getComponentName());
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        searchView.setIconifiedByDefault(true);
+//        searchView.setIconified(false);
+        Log.i(TAG, "SearchView: " + searchView.getQueryHint());
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                Log.e(TAG, "onClose: ");
+                //close searchFragment and return to lastFragment
+                afterCloseSearch();
+
+                return false;
+            }
+        });
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: ");
+                //switch to search fragment
+                switchContent(R.id.action_search);
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i(TAG, "onQueryTextSubmit: query: " + query);
+                //if current fragment is not search fragment,switch
+                if (mCurrentFragment != null && !(mCurrentFragment instanceof SearchFragment)) {
+                    switchContent(R.id.action_search);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i(TAG, "onQueryTextChange: newText: " + newText);
+                return false;
+            }
+        });
+
+    }
+
+    private void doSearch(String type, int count, int page) {
+        GankService.getGankApi().search(type, count, page)
+                .enqueue(new Callback<SearchResponse<SearchResult>>() {
+                    @Override
+                    public void onResponse(Response<SearchResponse<SearchResult>> response
+                            , Retrofit retrofit) {
+                        if (response.body() != null) {
+                            SearchResponse<SearchResult> gank = response.body();
+                            Log.d(TAG, gank.toString());
+
+                            List<SearchResult> results = gank.getResults();
+
+//                            for (SearchResult result : results) {
+//                                Log.i(TAG, result.toString());
+//                            }
+
+                        } else {
+                            Log.d(TAG, "onResponse: response.body()==null");
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
     }
 
     /* Called whenever we call invalidateOptionsMenu() */
@@ -323,7 +399,6 @@ public class MainActivity extends AppCompatActivity
 
             case R.id.action_search:
                 Log.d(TAG, "onOptionsItemSelected: search");
-
                 return true;
             default:
                 break;
@@ -331,9 +406,19 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onCameraInteraction(Uri uri) {
 
     }
 
+    @Override
+    public void onGalleryInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onSearchInteraction(DummyContent.DummyItem item) {
+
+    }
 }
