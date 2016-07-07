@@ -26,5 +26,6 @@
         completions."
     </string>
     <string name="error_identity_expired">Identity has expired,please login again.</string>
+    <string name="menu_search">search</string>
 
 </resources>

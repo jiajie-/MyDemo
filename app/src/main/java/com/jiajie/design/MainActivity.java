@@ -20,6 +20,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jiajie.design.api.GankService;
+import com.jiajie.design.api.SearchResponse;
+import com.jiajie.design.api.SearchResult;
+
+import java.util.List;
+
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
 public class MainActivity extends AppCompatActivity
         implements CameraFragment.OnFragmentInteractionListener,
         GalleryFragment.OnFragmentInteractionListener {
@@ -74,13 +84,34 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(rootLayout, "Hello.I am Snackbar!", Snackbar.LENGTH_SHORT)
-                        .setAction("Undo", new View.OnClickListener() {
+//                showSnackBar();
+                GankService.getGankApi().search("all", 3, 1)
+                        .enqueue(new Callback<SearchResponse<SearchResult>>() {
                             @Override
-                            public void onClick(View v) {
-                                Log.d(TAG, "onClick: Snackbar");
+                            public void onResponse(Response<SearchResponse<SearchResult>> response
+                                    , Retrofit retrofit) {
+                                if (response.body() != null) {
+                                    SearchResponse<SearchResult> gank = response.body();
+                                    Log.d(TAG, gank.toString());
+
+                                    List<SearchResult> results = gank.getResults();
+
+                                    for (SearchResult result : results) {
+                                        Log.i(TAG, result.toString());
+                                    }
+
+                                } else {
+                                    Log.d(TAG, "onResponse: response.body()==null");
+                                }
+
                             }
-                        }).show();
+
+                            @Override
+                            public void onFailure(Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
+
             }
         });
 
@@ -154,6 +185,16 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy: ");
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(rootLayout, "Hello.I am Snackbar!", Snackbar.LENGTH_SHORT)
+                .setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick: Snackbar");
+                    }
+                }).show();
     }
 
     /** Swaps fragments in the menu_main content view */
@@ -275,11 +316,18 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.action_settings:
 
+                return true;
+
+            case R.id.action_search:
+                Log.d(TAG, "onOptionsItemSelected: search");
+
+                return true;
+            default:
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
