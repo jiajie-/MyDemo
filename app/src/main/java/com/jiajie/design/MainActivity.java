@@ -26,7 +26,6 @@ import android.view.View;
 import com.jiajie.design.api.GankService;
 import com.jiajie.design.api.SearchResponse;
 import com.jiajie.design.api.SearchResult;
-import com.jiajie.design.dummy.DummyContent;
 
 import java.util.List;
 
@@ -329,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (mCurrentFragment != null && !(mCurrentFragment instanceof SearchFragment)) {
                     switchContent(R.id.action_search);
                 }
+                //do search
+                doSearch(query, 20, 1);
                 return false;
             }
 
@@ -352,10 +353,13 @@ public class MainActivity extends AppCompatActivity implements
                             Log.d(TAG, gank.toString());
 
                             List<SearchResult> results = gank.getResults();
-
-//                            for (SearchResult result : results) {
-//                                Log.i(TAG, result.toString());
-//                            }
+                            if (mSearchFragment != null) {
+                                mSearchFragment.setSearchResult(results);
+                            }
+                            for (SearchResult result : results) {
+                                Log.i(TAG, result.toString());
+                                //set to recycler view
+                            }
 
                         } else {
                             Log.d(TAG, "onResponse: response.body()==null");
@@ -394,11 +398,6 @@ public class MainActivity extends AppCompatActivity implements
 
         switch (id) {
             case R.id.action_settings:
-
-                return true;
-
-            case R.id.action_search:
-                Log.d(TAG, "onOptionsItemSelected: search");
                 return true;
             default:
                 break;
@@ -418,7 +417,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSearchInteraction(DummyContent.DummyItem item) {
+    public void onSearchItemClick(SearchResult item) {
+        Log.d(TAG, "onSearchItemClick: item:" + item.getWho());
 
     }
 }

@@ -15,4 +15,10 @@
     <dimen name="fab_shadow_pressed">12dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
+    <!--text-->
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_title">17sp</dimen>
+    <dimen name="text_subtitle">13sp</dimen>
+
+
 </resources>

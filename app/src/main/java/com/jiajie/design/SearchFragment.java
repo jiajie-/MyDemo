@@ -10,9 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 
-import com.jiajie.design.dummy.DummyContent;
-import com.jiajie.design.dummy.DummyContent.DummyItem;
+import com.jiajie.design.api.SearchResult;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
  * A fragment representing a list of Items.
@@ -29,6 +34,9 @@ public class SearchFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private SearchInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private SearchItemAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,17 +73,31 @@ public class SearchFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new SearchItemAdapter(DummyContent.ITEMS, mListener));
+            List<SearchResult> results = new ArrayList<>();
+            adapter = new SearchItemAdapter(results, mListener);
+            recyclerView.setAdapter(adapter);
+            //set animator
+            SlideInLeftAnimator animator = new SlideInLeftAnimator();
+            animator.setInterpolator(new OvershootInterpolator());
+            // or recyclerView.setItemAnimator(new SlideInUpAnimator(new OvershootInterpolator(1f));
+            recyclerView.setItemAnimator(animator);
         }
         return view;
     }
 
+    public void setSearchResult(List<SearchResult> results) {
+        if (recyclerView != null) {
+            for (int i = 0; i < results.size(); i++) {
+                adapter.addItem(i, results.get(i));
+            }
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -106,6 +128,6 @@ public class SearchFragment extends Fragment {
      */
     public interface SearchInteractionListener {
         // TODO: Update argument type and name
-        void onSearchInteraction(DummyItem item);
+        void onSearchItemClick(SearchResult item);
     }
 }

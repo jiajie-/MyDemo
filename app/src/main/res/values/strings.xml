@@ -27,4 +27,6 @@
     <!--strings related to search-->
     <string name="search_hint">i am search hint</string>
 
+    <string name="tips_no_search_result">no search result&#046;&#046;&#046;</string>
+
 </resources>
