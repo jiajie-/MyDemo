@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements
         GalleryFragment.GalleryInteractionListener,
         SearchFragment.SearchInteractionListener {
 
-    private static final String TAG = "CodeLabActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
@@ -311,7 +311,6 @@ public class MainActivity extends AppCompatActivity implements
     private void setupSearch(Menu menu) {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        Log.i(TAG, "getComponentName(): " + getComponentName());
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 //        searchView.setIconifiedByDefault(true);
 //        searchView.setIconified(false);
