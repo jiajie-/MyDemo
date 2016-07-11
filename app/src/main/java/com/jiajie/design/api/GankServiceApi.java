@@ -21,5 +21,4 @@ public interface GankServiceApi {
                                               @Path("count") int count,
                                               @Path("page") int page);
 
-
 }

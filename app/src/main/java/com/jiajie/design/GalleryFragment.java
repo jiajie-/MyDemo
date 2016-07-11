@@ -21,7 +21,7 @@ import android.view.ViewGroup;
  */
 public class GalleryFragment extends Fragment {
 
-    private static final String TAG = "GalleryFragment";
+    private static final String TAG = GalleryFragment.class.getSimpleName();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

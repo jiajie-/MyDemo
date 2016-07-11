@@ -27,7 +27,7 @@ import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
  */
 public class SearchFragment extends Fragment {
 
-    private static final String TAG = "SearchFragment";
+    private static final String TAG = SearchFragment.class.getSimpleName();
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";

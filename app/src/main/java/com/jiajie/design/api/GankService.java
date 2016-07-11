@@ -11,7 +11,6 @@ public class GankService {
 
     public static final String BASE_URL = "http://gank.io/api/";
 
-
     private static GankServiceApi api;
 
     public GankService() {

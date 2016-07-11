@@ -10,17 +10,16 @@ import android.widget.TextView;
 
 import com.jiajie.design.SearchFragment.SearchInteractionListener;
 import com.jiajie.design.api.SearchResult;
-import com.jiajie.design.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link SearchResult} and makes a call to the
  * specified {@link SearchInteractionListener}.
  */
 public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final String TAG = "SearchItemAdapter";
+    private static final String TAG = SearchItemAdapter.class.getSimpleName();
     private static final int TYPE_EMPTY = 0;
     private static final int TYPE_ITEM = 1;
 
