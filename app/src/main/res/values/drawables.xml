@@ -3,8 +3,8 @@
     <item name="ic_menu_gallery" type="drawable">@android:drawable/ic_menu_gallery</item>
     <item name="ic_menu_slideshow" type="drawable">@android:drawable/ic_menu_slideshow</item>
     <item name="ic_menu_manage" type="drawable">@android:drawable/ic_menu_manage</item>
-    <item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>
-    <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
+    <!--<item name="ic_menu_share" type="drawable">@android:drawable/ic_menu_share</item>-->
+    <!--<item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>-->
 
     <item name="ic_menu_exit" type="drawable">@drawable/ic_exit_black_24dp</item>
     <item name="ic_email_black" type="drawable">@drawable/ic_email_black_24dp</item>
