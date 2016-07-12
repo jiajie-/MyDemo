@@ -39,6 +39,7 @@ import retrofit.Retrofit;
 public class MainActivity extends AppCompatActivity implements
         CameraFragment.CameraInteractionListener,
         GalleryFragment.GalleryInteractionListener,
+        GalleryFragment2.OnListFragmentInteractionListener,
         SearchFragment.SearchInteractionListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -54,12 +55,14 @@ public class MainActivity extends AppCompatActivity implements
     static final String cameraTag = "Camera";
     static final String galleryTag = "Gallery";
     static final String searchTag = "Search";
+    static final String gallery2Tag = "Gallery2";
 
     //fragments
     FragmentManager mFragmentManager;
     CameraFragment mCameraFragment;
     GalleryFragment mGalleryFragment;
     SearchFragment mSearchFragment;
+    GalleryFragment2 mGalleryFragment2;
 
     Fragment mCurrentFragment;
     String mLastFragmentTag;
@@ -235,6 +238,11 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case R.id.nav_slideshow:
+                if (mGalleryFragment2 == null) {
+                    mGalleryFragment2 = GalleryFragment2.newInstance(1);
+                }
+                tag = gallery2Tag;
+                toFragment = mGalleryFragment2;
                 break;
 
             case R.id.nav_tools:
@@ -433,5 +441,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onSearchItemClick(SearchResult item) {
         Log.d(TAG, "onSearchItemClick: item:" + item.getWho());
 
+    }
+
+    @Override
+    public void onListFragmentInteraction(String item) {
+        Log.d(TAG, "onListFragmentInteraction: " + item);
     }
 }

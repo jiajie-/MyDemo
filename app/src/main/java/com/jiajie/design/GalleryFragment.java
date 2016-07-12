@@ -3,12 +3,18 @@ package com.jiajie.design;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+
+import java.io.File;
 
 
 /**
@@ -33,6 +39,25 @@ public class GalleryFragment extends Fragment {
     private String mParam2;
 
     private GalleryInteractionListener mListener;
+
+    //test Glide
+    private ImageView mImageView;
+    public static String[] eatFoodyImages = {
+            "http://ww4.sinaimg.cn/small/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg",
+            "http://ww1.sinaimg.cn/small/610dc034jw1f5l6tgzc2sj20zk0nqgq0.jpg",
+            "http://ww2.sinaimg.cn/small/610dc034jw1f5k1k4azguj20u00u0421.jpg",
+            "http://ww1.sinaimg.cn/small/610dc034jw1f5hpzuy3r7j20np0zkgpd.jpg",
+            "http://ww3.sinaimg.cn/small/610dc034jw1f5d36vpqyuj20zk0qo7fc.jpg",
+            "http://ww2.sinaimg.cn/small/610dc034jw1f5aqgzu2oej20rt15owo7.jpg",
+            "http://ww1.sinaimg.cn/small/610dc034jw1f566a296rpj20lc0sggoj.jpg",
+            "http://ww3.sinaimg.cn/mw690/81309c56jw1f4v6mic7r5j20m80wan5n.jpg",
+            "http://ww4.sinaimg.cn/small/610dc034jw1f4vmdn2f5nj20kq0rm755.jpg",
+            "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg",
+            "http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz6g6wppj20ms0xp13n.jpg",
+            "http://ww3.sinaimg.cn/mw690/81309c56jw1f4sx4ybttdj20ku0vd0ym.jpg",
+            "http://ww4.sinaimg.cn/mw690/9844520fjw1f4fqribdg1j21911w0kjn.jpg",
+            "http://ww4.sinaimg.cn/small/610dc034jw1f4nog8tjfrj20eg0mgab7.jpg",
+    };
 
     public GalleryFragment() {
         // Required empty public constructor
@@ -72,7 +97,11 @@ public class GalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.d(TAG, "onCreateView: ");
-        return inflater.inflate(R.layout.fragment_gallery, container, false);
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        mImageView = (ImageView) view.findViewById(R.id.iv_image);
+
+
+        return view;
     }
 
     @Override
@@ -91,6 +120,28 @@ public class GalleryFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: ");
+        String internetUrl = "http://ww3.sinaimg.cn/small/610dc034gw1f5pu0w0r56j20m80rsjuy.jpg";
+        int resourceId = R.mipmap.ic_launcher;
+        File file = new File(Environment.
+                getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Screenshots/",
+                "Screenshot_2016-03-29-11-00-09.png");
+        Uri uri = resourceIdToUri(getContext(), R.mipmap.ic_launcher);
+
+        //from URL
+        Glide.with(getContext())
+//                .load(internetUrl)
+//                .load(resourceId)
+//                .load(file)
+                .load(uri)
+                .into(mImageView);
+
+        //from local
+
+    }
+
+    private Uri resourceIdToUri(Context context, int resourceId) {
+        return Uri.parse("android.resource://" + context.getPackageName() + File.separator
+                + resourceId);
     }
 
     @Override
