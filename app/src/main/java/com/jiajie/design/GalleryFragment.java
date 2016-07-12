@@ -121,6 +121,7 @@ public class GalleryFragment extends Fragment {
         super.onResume();
         Log.d(TAG, "onResume: ");
         String internetUrl = "http://ww3.sinaimg.cn/small/610dc034gw1f5pu0w0r56j20m80rsjuy.jpg";
+        String filePath = "/storage/emulated/0/Pictures/example_video.mp4";
         int resourceId = R.mipmap.ic_launcher;
         File file = new File(Environment.
                 getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Screenshots/",

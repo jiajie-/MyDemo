@@ -44,7 +44,15 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 
         Glide.with(mContext)
                 .load(mValues.get(position))
-                .placeholder(R.drawable.ic_place_holder)
+//                .asGif() //for gif,but speed too slow ...
+                .placeholder(R.drawable.ic_place_holder)// can also be a drawable
+                .error(R.drawable.ic_menu_exit)// will be displayed if the image cannot be loaded
+                .crossFade(1000)
+//                .dontAnimate() //directly show image without animate
+                .override(300,600)
+//                .centerCrop()
+                .fitCenter()
+
                 .into((ImageView) holder.mView);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
