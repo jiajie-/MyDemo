@@ -9,4 +9,6 @@
     <item name="ic_menu_exit" type="drawable">@drawable/ic_exit_black_24dp</item>
     <item name="ic_email_black" type="drawable">@drawable/ic_email_black_24dp</item>
     <item name="ic_key_black" type="drawable">@drawable/ic_key_black_24dp</item>
+
+    <item name="ic_place_holder" type="drawable">@mipmap/ic_launcher</item>
 </resources>

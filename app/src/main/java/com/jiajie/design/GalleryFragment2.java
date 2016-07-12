@@ -31,19 +31,19 @@ public class GalleryFragment2 extends Fragment {
     public static List<String> mImages = new ArrayList<>();
 
     static {
-        mImages.add("http://ww4.sinaimg.cn/small/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
-        mImages.add("http://ww1.sinaimg.cn/small/610dc034jw1f5l6tgzc2sj20zk0nqgq0.jpg");
-        mImages.add("http://ww2.sinaimg.cn/small/610dc034jw1f5k1k4azguj20u00u0421.jpg");
-        mImages.add("http://ww1.sinaimg.cn/small/610dc034jw1f5hpzuy3r7j20np0zkgpd.jpg");
-        mImages.add("http://ww3.sinaimg.cn/small/610dc034jw1f5d36vpqyuj20zk0qo7fc.jpg");
-        mImages.add("http://ww2.sinaimg.cn/small/610dc034jw1f5aqgzu2oej20rt15owo7.jpg");
-        mImages.add("http://ww1.sinaimg.cn/small/610dc034jw1f566a296rpj20lc0sggoj.jpg");
+        mImages.add("http://ww4.sinaimg.cn/large/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
+        mImages.add("http://ww1.sinaimg.cn/large/610dc034jw1f5l6tgzc2sj20zk0nqgq0.jpg");
+        mImages.add("http://ww2.sinaimg.cn/large/610dc034jw1f5k1k4azguj20u00u0421.jpg");
+        mImages.add("http://ww1.sinaimg.cn/large/610dc034jw1f5hpzuy3r7j20np0zkgpd.jpg");
+        mImages.add("http://ww3.sinaimg.cn/large/610dc034jw1f5d36vpqyuj20zk0qo7fc.jpg");
+        mImages.add("http://ww2.sinaimg.cn/large/610dc034jw1f5aqgzu2oej20rt15owo7.jpg");
+        mImages.add("http://ww1.sinaimg.cn/large/610dc034jw1f566a296rpj20lc0sggoj.jpg");
         mImages.add("http://ww3.sinaimg.cn/mw690/81309c56jw1f4v6mic7r5j20m80wan5n.jpg");
-        mImages.add("http://ww4.sinaimg.cn/small/610dc034jw1f4vmdn2f5nj20kq0rm755.jpg");
+        mImages.add("http://ww4.sinaimg.cn/large/610dc034jw1f4vmdn2f5nj20kq0rm755.jpg");
         mImages.add("http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg");
         mImages.add("http://ww3.sinaimg.cn/mw690/81309c56jw1f4sx4ybttdj20ku0vd0ym.jpg");
         mImages.add("http://ww4.sinaimg.cn/mw690/9844520fjw1f4fqribdg1j21911w0kjn.jpg");
-        mImages.add("http://ww4.sinaimg.cn/small/610dc034jw1f4nog8tjfrj20eg0mgab7.jpg");
+        mImages.add("http://ww4.sinaimg.cn/large/610dc034jw1f4nog8tjfrj20eg0mgab7.jpg");
     }
 
     /**
@@ -77,17 +77,18 @@ public class GalleryFragment2 extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery2, container, false);
 
+        Context context = view.getContext();
+
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new GalleryItemAdapter(getContext(), mImages, mListener));
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+        recyclerView.setAdapter(new GalleryItemAdapter(getContext(), mImages, mListener));
+
         return view;
     }
 

@@ -44,6 +44,7 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 
         Glide.with(mContext)
                 .load(mValues.get(position))
+                .placeholder(R.drawable.ic_place_holder)
                 .into((ImageView) holder.mView);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
