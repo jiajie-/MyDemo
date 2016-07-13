@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.GalleryFragment2.OnListFragmentInteractionListener;
 
@@ -46,18 +45,18 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 
         Glide.with(mContext)
                 .load(mValues.get(position))
-//                .diskCacheStrategy(DiskCacheStrategy.NONE) //disable disk cache
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE) //disable disk cache
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                .skipMemoryCache(true) //disable RAM cache,but still use DISK cache.
 //                .asGif() //for gif,but speed too slow ...
                 .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
                 .error(R.drawable.ic_menu_exit) // will be displayed if the image cannot be loaded.
-                .crossFade(300)
-                .priority(Priority.NORMAL) // set priority of this picture
+//                .crossFade(300)
+//                .priority(Priority.NORMAL) // set priority of this picture
 //                .dontAnimate() //directly show image without animate.
-//                .override(300,600)
+//                .override(100,100)
 //                .centerCrop()
 //                .fitCenter()
+//                .thumbnail(0.1f)
                 .into((ImageView) holder.mView);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

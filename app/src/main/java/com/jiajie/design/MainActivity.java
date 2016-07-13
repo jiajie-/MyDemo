@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.nav_slideshow:
                 if (mGalleryFragment2 == null) {
-                    mGalleryFragment2 = GalleryFragment2.newInstance(1);
+                    mGalleryFragment2 = GalleryFragment2.newInstance(2);
                 }
                 tag = gallery2Tag;
                 toFragment = mGalleryFragment2;

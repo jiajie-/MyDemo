@@ -17,7 +17,9 @@
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginStart="64dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:title="@string/app_name"
+            >
 
             <!--<ImageView-->
             <!--android:layout_width="match_parent"-->
@@ -32,9 +34,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
-                app:theme="@style/AppTheme.AppBarOverlay"
+                android:fitsSystemWindows="true"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:theme="@style/AppTheme.AppBarOverlay"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
