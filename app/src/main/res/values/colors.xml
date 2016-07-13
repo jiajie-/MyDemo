@@ -13,4 +13,7 @@
     <color name="textDisabled">#60000000</color>
     <color name="textHint">#60000000</color>
 
+    <color name="textDark">#90220700</color>
+
+
 </resources>

@@ -3,11 +3,8 @@ package com.jiajie.design;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -24,7 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.jiajie.design.api.GankService;
 import com.jiajie.design.api.SearchResponse;
@@ -49,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     FloatingActionButton fab;
     CoordinatorLayout rootLayout;
     Toolbar toolbar;
-    CollapsingToolbarLayout collapsingToolbarLayout;
+    //    CollapsingToolbarLayout collapsingToolbarLayout;
     NavigationView navigationView;
 
     static final String cameraTag = "Camera";
@@ -72,22 +68,22 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setStatusBarColor(Color.TRANSPARENT);
+//        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+//        }
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         navigationView = (NavigationView) findViewById(R.id.navigation);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
+//        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar_layout);
 
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
@@ -145,7 +141,8 @@ public class MainActivity extends AppCompatActivity implements
                 FragmentTransaction transaction = mFragmentManager.beginTransaction();
                 // 将该 Fragment 添加到“fragment_container”FrameLayout 中
                 transaction.add(R.id.fragment_container, mCameraFragment, cameraTag).commit();
-                collapsingToolbarLayout.setTitle(mCameraFragment.getTag());
+//                collapsingToolbarLayout.setTitle(mCameraFragment.getTag());
+                toolbar.setTitle(mCameraFragment.getTag());
             }
 
         }
@@ -207,7 +204,8 @@ public class MainActivity extends AppCompatActivity implements
         transaction.remove(mCurrentFragment).show(lastFragment).commit();
         mCurrentFragment = lastFragment;
         mLastFragmentTag = mCurrentFragment.getTag();
-        collapsingToolbarLayout.setTitle(mLastFragmentTag);
+//        collapsingToolbarLayout.setTitle(mLastFragmentTag);
+        toolbar.setTitle(mLastFragmentTag);
     }
 
     /** Swaps fragments in the menu_main content view */
@@ -239,7 +237,8 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.nav_slideshow:
                 if (mGalleryFragment2 == null) {
-                    mGalleryFragment2 = GalleryFragment2.newInstance(2);
+                    mGalleryFragment2 = GalleryFragment2.newInstance(
+                            getResources().getInteger(R.integer.span_count));
                 }
                 tag = gallery2Tag;
                 toFragment = mGalleryFragment2;
@@ -288,7 +287,8 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
         mCurrentFragment = toFragment;
 
-        collapsingToolbarLayout.setTitle(tag);
+//        collapsingToolbarLayout.setTitle(tag);
+        toolbar.setTitle(tag);
     }
 
     @Override
