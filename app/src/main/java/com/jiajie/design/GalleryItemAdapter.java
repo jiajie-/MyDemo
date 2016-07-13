@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.GalleryFragment2.OnListFragmentInteractionListener;
 
@@ -52,6 +53,7 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
                 .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
                 .error(R.drawable.ic_menu_exit) // will be displayed if the image cannot be loaded.
                 .crossFade(300)
+                .priority(Priority.NORMAL) // set priority of this picture
 //                .dontAnimate() //directly show image without animate.
 //                .override(300,600)
 //                .centerCrop()
