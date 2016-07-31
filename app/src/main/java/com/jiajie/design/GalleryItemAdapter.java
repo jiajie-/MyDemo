@@ -49,7 +49,7 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 //                .skipMemoryCache(true) //disable RAM cache,but still use DISK cache.
 //                .asGif() //for gif,but speed too slow ...
                 .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
-                .error(R.drawable.ic_menu_exit) // will be displayed if the image cannot be loaded.
+                .error(R.drawable.ic_place_holder) // will be displayed if the image cannot be loaded.
 //                .crossFade(300)
 //                .priority(Priority.NORMAL) // set priority of this picture
 //                .dontAnimate() //directly show image without animate.

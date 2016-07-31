@@ -19,6 +19,7 @@ import com.jiajie.design.api.DataResponse;
 import com.jiajie.design.api.DataResult;
 import com.jiajie.design.api.GankService;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ import retrofit.Retrofit;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class GalleryFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class GalleryFragment extends Fragment implements LoadDataScrollController.OnRecycleRefreshListener {
 
     private static final String TAG = GalleryFragment.class.getSimpleName();
     // TODO: Customize parameter argument names
@@ -40,47 +41,56 @@ public class GalleryFragment extends Fragment implements SwipeRefreshLayout.OnRe
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-    private SwipeRefreshLayout refresh;
-    private static final int REFRESH = 1;
+    private SwipeRefreshLayout mRefreshLayout;
+    private static final int MSG_REFRESH = 1;
+    private static final int MSG_LOAD_MORE = 2;
     private GalleryItemAdapter adapter;
+    private MyHandler handler;
+    private int currentPage = 1;
 
-    private Handler handler = new Handler() {
+    private LoadDataScrollController mController;
+
+    private static class MyHandler extends Handler {
+
+        private final WeakReference<GalleryFragment> mFragment;
+
+        public MyHandler(GalleryFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
         public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            GalleryFragment gallery = mFragment.get();
             switch (msg.what) {
-                case REFRESH:
+                case MSG_REFRESH:
                     //刷新一次就添加1页数据
-                    mImages.add(0, "http://ww4.sinaimg.cn/large/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
-
+                    gallery.mImages.add(0, "http://ww4.sinaimg.cn/large/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
                     //通知界面改变
-                    adapter.notifyDataSetChanged();
+                    gallery.adapter.notifyDataSetChanged();
                     //刷新状态改变了
-                    refresh.setRefreshing(false);
+                    gallery.mRefreshLayout.setRefreshing(false);
+                    gallery.mController.setLoadDataStatus(false);
+                    break;
+
+                case MSG_LOAD_MORE:
+                    gallery.currentPage++;
+                    gallery.loadData();
+
+//                    gallery.mController.setLoadDataStatus(false);
+
+
                     break;
                 default:
                     break;
             }
+
+
         }
-    };
+    }
 
     //test Glide
-    public static List<String> mImages = new ArrayList<>();
-
-    static {
-//        mImages.add("http://ww4.sinaimg.cn/large/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
-//        mImages.add("http://ww1.sinaimg.cn/large/610dc034jw1f5l6tgzc2sj20zk0nqgq0.jpg");
-//        mImages.add("http://ww2.sinaimg.cn/large/610dc034jw1f5k1k4azguj20u00u0421.jpg");
-//        mImages.add("http://ww1.sinaimg.cn/large/610dc034jw1f5hpzuy3r7j20np0zkgpd.jpg");
-//        mImages.add("http://ww3.sinaimg.cn/large/610dc034jw1f5d36vpqyuj20zk0qo7fc.jpg");
-//        mImages.add("http://ww2.sinaimg.cn/large/610dc034jw1f5aqgzu2oej20rt15owo7.jpg");
-//        mImages.add("http://ww1.sinaimg.cn/large/610dc034jw1f566a296rpj20lc0sggoj.jpg");
-//        mImages.add("http://ww3.sinaimg.cn/mw690/81309c56jw1f4v6mic7r5j20m80wan5n.jpg");
-//        mImages.add("http://ww4.sinaimg.cn/large/610dc034jw1f4vmdn2f5nj20kq0rm755.jpg");
-//        mImages.add("http://ww1.sinaimg.cn/mw690/692a6bbcgw1f4fz7s830fj20gg0o00y5.jpg");
-//        mImages.add("http://ww3.sinaimg.cn/mw690/81309c56jw1f4sx4ybttdj20ku0vd0ym.jpg");
-//        mImages.add("http://ww4.sinaimg.cn/mw690/9844520fjw1f4fqribdg1j21911w0kjn.jpg");
-//        mImages.add("http://ww4.sinaimg.cn/large/610dc034jw1f4nog8tjfrj20eg0mgab7.jpg");
-//        mImages.add("http://i.kinja-img.com/gawker-media/image/upload/s--B7tUiM5l--/gf2r69yorbdesguga10i.gif");
-    }
+    public List<String> mImages = new ArrayList<>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -114,10 +124,13 @@ public class GalleryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         Context context = view.getContext();
+        handler = new MyHandler(this);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
-        refresh = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-        refresh.setOnRefreshListener(this);
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        mController = new LoadDataScrollController(this);
+        recyclerView.addOnScrollListener(mController);
+        mRefreshLayout.setOnRefreshListener(mController);
 
         adapter = new GalleryItemAdapter(getContext(), mImages, mListener);
 
@@ -156,10 +169,14 @@ public class GalleryFragment extends Fragment implements SwipeRefreshLayout.OnRe
         Log.e(TAG, "onActivityCreated: ");
         //set loading
         //start load images
+        loadData();
+    }
+
+    private void loadData() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                GankService.getGankApi().getData("福利", 10, 1)
+                GankService.getGankApi().getData("福利", 10, currentPage)
                         .enqueue(new Callback<DataResponse<DataResult>>() {
                             @Override
                             public void onResponse(Response<DataResponse<DataResult>> response
@@ -167,7 +184,6 @@ public class GalleryFragment extends Fragment implements SwipeRefreshLayout.OnRe
                                 if (response.body() != null) {
                                     DataResponse<DataResult> gank = response.body();
 //                                    Log.d(TAG, gank.toString());
-//
                                     List<DataResult> results = gank.getResults();
                                     for (DataResult result : results) {
                                         Log.i(TAG, result.toString());
@@ -190,13 +206,19 @@ public class GalleryFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             }
         }).start();
-
-
+        mController.setLoadDataStatus(false);
     }
 
     @Override
-    public void onRefresh() {
-        handler.sendEmptyMessageDelayed(REFRESH, 200);
+    public void refresh() {
+        Log.e(TAG, "refresh: ");
+        handler.sendEmptyMessageDelayed(MSG_REFRESH, 200);
+    }
+
+    @Override
+    public void loadMore() {
+        Log.e(TAG, "loadMore: ");
+        handler.sendEmptyMessageDelayed(MSG_LOAD_MORE, 200);
     }
 
     /**
