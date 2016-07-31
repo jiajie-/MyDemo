@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.jiajie.design.GalleryFragment2.OnListFragmentInteractionListener;
+import com.jiajie.design.GalleryFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
