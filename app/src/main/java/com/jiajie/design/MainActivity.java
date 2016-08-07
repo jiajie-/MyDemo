@@ -2,6 +2,7 @@ package com.jiajie.design;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     //fragments
     FragmentManager mFragmentManager;
     CameraFragment mCameraFragment;
-//    GalleryFragment mGalleryFragment;
+    //    GalleryFragment mGalleryFragment;
     SearchFragment mSearchFragment;
     GalleryFragment mGalleryFragment;
 
@@ -436,5 +437,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onListFragmentInteraction(String item) {
         Log.d(TAG, "onListFragmentInteraction: " + item);
+
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        intent.putExtra("url", item);
+        startActivity(intent);
+
+
     }
 }

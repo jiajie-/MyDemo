@@ -15,5 +15,7 @@
 
     <color name="textDark">#90220700</color>
 
+    <color name="black_overlay">#66000000</color>
+
 
 </resources>

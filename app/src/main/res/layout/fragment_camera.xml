@@ -6,10 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".CameraFragment">
 
-    <TextView
-        android:id="@+id/tv_camera"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="I am Camera"/>
+    <com.jiajie.design.widgets.CounterView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"/>
 
 </FrameLayout>

@@ -53,7 +53,7 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 //                .crossFade(300)
 //                .priority(Priority.NORMAL) // set priority of this picture
 //                .dontAnimate() //directly show image without animate.
-//                .override(100,100)
+                .override(200,200)
 //                .centerCrop()
 //                .fitCenter()
 //                .thumbnail(0.1f)
