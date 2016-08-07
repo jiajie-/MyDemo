@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,10 +35,8 @@ import retrofit.Retrofit;
 public class GalleryFragment extends Fragment implements LoadDataScrollController.OnRecycleRefreshListener {
 
     private static final String TAG = GalleryFragment.class.getSimpleName();
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
+//    private static final String ARG_COLUMN_COUNT = "column-count";
+//    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private SwipeRefreshLayout mRefreshLayout;
     private static final int MSG_REFRESH = 1;
@@ -65,7 +62,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
             switch (msg.what) {
                 case MSG_REFRESH:
                     //刷新一次就添加1页数据
-                    gallery.mImages.add(0, "http://ww4.sinaimg.cn/large/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
+//                    gallery.mImages.add(0, "http://ww4.sinaimg.cn/large/610dc034jw1f5md1e68p9j20fk0ncgo0.jpg");
                     //通知界面改变
                     gallery.adapter.notifyDataSetChanged();
                     //刷新状态改变了
@@ -90,7 +87,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
     }
 
     //test Glide
-    public List<String> mImages = new ArrayList<>();
+    public List<DataResult> mImages = new ArrayList<>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -101,11 +98,11 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static GalleryFragment newInstance(int columnCount) {
+    public static GalleryFragment newInstance() {
         GalleryFragment fragment = new GalleryFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+//        Bundle args = new Bundle();
+//        args.putInt(ARG_COLUMN_COUNT, columnCount);
+//        fragment.setArguments(args);
         return fragment;
     }
 
@@ -113,9 +110,9 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
+//        if (getArguments() != null) {
+//            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+//        }
     }
 
     @Override
@@ -134,12 +131,14 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
 
         adapter = new GalleryItemAdapter(getContext(), mImages, mListener);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+//        if (mColumnCount <= 1) {
+//        } else {
+//            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//        }
         // Set the adapter
-        if (mColumnCount <= 1) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        }
+
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -187,7 +186,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
                                     List<DataResult> results = gank.getResults();
                                     for (DataResult result : results) {
                                         Log.i(TAG, result.toString());
-                                        mImages.add(result.getUrl());
+                                        mImages.add(result);
                                         adapter.notifyDataSetChanged();
                                         //set to recycler view
                                     }
@@ -233,6 +232,6 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(String item);
+        void onListFragmentInteraction(DataResult item);
     }
 }

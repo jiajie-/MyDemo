@@ -15,5 +15,5 @@
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
         android:fitsSystemWindows="true"
-        tools:listitem="@layout/item_image"/>
+        tools:listitem="@layout/item_girl"/>
 </android.support.v4.widget.SwipeRefreshLayout>

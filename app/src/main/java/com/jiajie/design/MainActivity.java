@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jiajie.design.api.DataResult;
 import com.jiajie.design.api.GankService;
 import com.jiajie.design.api.SearchResponse;
 import com.jiajie.design.api.SearchResult;
@@ -228,8 +229,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.nav_gallery:
                 if (mGalleryFragment == null) {
-                    mGalleryFragment = GalleryFragment.newInstance(
-                            getResources().getInteger(R.integer.span_count));
+                    mGalleryFragment = GalleryFragment.newInstance();
                 }
                 tag = galleryTag;
                 toFragment = mGalleryFragment;
@@ -435,13 +435,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onListFragmentInteraction(String item) {
+    public void onListFragmentInteraction(DataResult item) {
         Log.d(TAG, "onListFragmentInteraction: " + item);
 
         Intent intent = new Intent(this, FullscreenActivity.class);
-        intent.putExtra("url", item);
+        intent.putExtra("url", item.getUrl());
         startActivity(intent);
-
 
     }
 }

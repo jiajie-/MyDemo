@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.GalleryFragment.OnListFragmentInteractionListener;
+import com.jiajie.design.api.DataResult;
 
 import java.util.List;
 
@@ -23,10 +25,10 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
     private static final String TAG = GalleryItemAdapter.class.getSimpleName();
 
     private Context mContext;
-    private final List<String> mValues;
+    private final List<DataResult> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public GalleryItemAdapter(Context context, List<String> items, OnListFragmentInteractionListener listener) {
+    public GalleryItemAdapter(Context context, List<DataResult> items, OnListFragmentInteractionListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
@@ -35,16 +37,19 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_image, parent, false);
-        return new ViewHolder(view);
+                .inflate(R.layout.item_girl, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        holder.text = (TextView) view.findViewById(R.id.desc);
+        holder.image = (ImageView) view.findViewById(R.id.image);
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mImageUrl = mValues.get(position);
+        final DataResult result = mValues.get(position);
 
         Glide.with(mContext)
-                .load(mValues.get(position))
+                .load(result.getUrl())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 //                .skipMemoryCache(true) //disable RAM cache,but still use DISK cache.
 //                .asGif() //for gif,but speed too slow ...
@@ -53,19 +58,21 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 //                .crossFade(300)
 //                .priority(Priority.NORMAL) // set priority of this picture
 //                .dontAnimate() //directly show image without animate.
-                .override(200,200)
+                .override(200, 200)
 //                .centerCrop()
 //                .fitCenter()
 //                .thumbnail(0.1f)
-                .into((ImageView) holder.mView);
+                .into(holder.image);
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.text.setText(result.getDesc());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mImageUrl);
+                    mListener.onListFragmentInteraction(result);
                 }
             }
         });
@@ -77,17 +84,17 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public String mImageUrl;
+
+        TextView text;
+        ImageView image;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mImageUrl + "'";
+            return super.toString();
         }
     }
 }
