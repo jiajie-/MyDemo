@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import com.jiajie.design.api.DataResponse;
 import com.jiajie.design.api.DataResult;
 import com.jiajie.design.api.GankService;
+import com.jiajie.design.widgets.DeleteRecyclerView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -123,7 +123,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
         Context context = view.getContext();
         handler = new MyHandler(this);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        DeleteRecyclerView recyclerView = (DeleteRecyclerView) view.findViewById(R.id.list);
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mController = new LoadDataScrollController(this);
         recyclerView.addOnScrollListener(mController);
