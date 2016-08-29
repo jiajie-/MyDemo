@@ -16,10 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MyViewActivity"
+            android:name=".notification.NotificationActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/TestTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -36,6 +37,19 @@
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme">
         </activity>
+
+        <!--<activity android:name=".notification.NotificationActivity"/>-->
+
+        <activity
+            android:name=".notification.ResultActivity"
+            android:parentActivityName=".notification.NotificationActivity"
+            android:theme="@style/TestTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".notification.NotificationActivity"/>
+        </activity>
+
+
     </application>
 
 </manifest>
