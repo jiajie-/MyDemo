@@ -43,4 +43,24 @@
         <attr name="unit" />
     </declare-styleable>
 
+    <declare-styleable name="SecondSpeedView" parent="SpeedView">
+        <attr name="indicatorColor" />
+        <attr name="centerCircleColor" />
+        <attr name="markColor" />
+        <attr name="lowSpeedColor" />
+        <attr name="mediumSpeedColor" />
+        <attr name="highSpeedColor" />
+        <attr name="textColor" />
+        <attr name="backgroundCircleColor" />
+        <attr name="speedometerWidth" />
+        <attr name="maxSpeed" />
+        <attr name="withTremble" />
+        <attr name="withBackgroundCircle" />
+        <attr name="speedTextSize" />
+        <attr name="unit" />
+        <attr name="speedTextColor" format="color" />
+        <attr name="speedBackgroundColor" format="color" />
+        <attr name="withEffects" format="boolean" />
+    </declare-styleable>
+
 </resources>
