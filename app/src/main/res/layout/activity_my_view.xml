@@ -1,12 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <com.jiajie.design.widgets.WatchView
-        android:layout_gravity="center"
-        android:layout_width="200dp"
-        android:layout_height="200dp"/>
+    <!--<com.jiajie.design.widgets.WatchView-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_width="200dp"-->
+    <!--android:layout_height="200dp"/>-->
 
-</FrameLayout>
+    <com.jiajie.design.widgets.speed.FirstSpeedView
+        android:id="@+id/speed_view"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:max="100"/>
+
+        <TextView
+            android:id="@+id/textSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            tools:text="50"/>
+
+    </LinearLayout>
+
+    <!--<Button-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="control"/>-->
+
+</LinearLayout>
