@@ -49,11 +49,14 @@ public class ThirdSpeedView extends SpeedView {
             rotateSpeedTextPaint;
 
     private RectF insideCircleRect,
+            rotateSpeedRect,
             speedBackgroundRect;
 
     private int speedBackgroundColor = Color.TRANSPARENT,
             speedTextColor = Color.WHITE,
             rotateTextColor = Color.RED,
+            rotateSpeedColor1 = Color.parseColor("#19FFFFFF"),
+            rotateSpeedColor2 = Color.parseColor("#FF0000"),
             smallMarkColor1 = Color.parseColor("#80FFFFFF"),
             smallMarkColor2 = Color.parseColor("#12C3F5"),
             insideCircleColor1 = Color.parseColor("#51FFFFFF"),
@@ -132,6 +135,10 @@ public class ThirdSpeedView extends SpeedView {
         smallMarkPath.moveTo(0f, 0f);
         smallMarkPaint.setStrokeWidth(smallMarkHeight / 3f);
 
+        //rotateSpeedRectF rotateSpeedPaint
+        float rotateWidth = h / 65f;
+        rotateSpeedRect.set(h / 40f, h / 40f, w - smallMarkHeight, h - smallMarkHeight);
+        rotateSpeedPaint.setStrokeWidth(rotateWidth);
     }
 
     @Override
@@ -152,18 +159,19 @@ public class ThirdSpeedView extends SpeedView {
         }
 
         //inside circle
-        canvas.drawArc(insideCircleRect, MIN_DEGREE, (MAX_DEGREE - MIN_DEGREE), false, insideCirclePaint);
+        canvas.drawArc(insideCircleRect, MIN_DEGREE, (MAX_DEGREE - MIN_DEGREE),
+                false, insideCirclePaint);
 
         //points
         canvas.drawPath(pointPath, pointPaint);
 
         //rotate speed arc
+        canvas.drawArc(rotateSpeedRect, 30f, 120f, false, rotateSpeedPaint);
 
         //mark
         canvas.save();
         canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
         float markPer = (MAX_DEGREE - MIN_DEGREE) / 11f;
-        float smallMarkPer = (MAX_DEGREE - MIN_DEGREE) / 44f;
         for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += markPer) {
             canvas.drawPath(markPath, markPaint);
             canvas.rotate(markPer, centerX, centerY);
@@ -173,6 +181,7 @@ public class ThirdSpeedView extends SpeedView {
         //small mark
         canvas.save();
         canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
+        float smallMarkPer = (MAX_DEGREE - MIN_DEGREE) / 44f;
         for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += smallMarkPer) {
             canvas.drawPath(smallMarkPath, smallMarkPaint);
             canvas.rotate(smallMarkPer, centerX, centerY);
@@ -232,12 +241,14 @@ public class ThirdSpeedView extends SpeedView {
         //rectF
         insideCircleRect = new RectF();
         speedBackgroundRect = new RectF();
+        rotateSpeedRect = new RectF();
 
         //set style
         pointPaint.setStyle(Paint.Style.STROKE);
         centerCirclePaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
+        rotateSpeedPaint.setStyle(Paint.Style.STROKE);
 
         //text align
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -290,7 +301,8 @@ public class ThirdSpeedView extends SpeedView {
         speedBackgroundPaint.setColor(speedBackgroundColor);
         speedTextPaint.setColor(speedTextColor);
         markTextPaint.setColor(getTextColor());
-        rotateSpeedTextPaint.setColor(Color.RED);
+        rotateSpeedTextPaint.setColor(rotateTextColor);
+        rotateSpeedPaint.setColor(rotateSpeedColor1);//TODO 根据情况
         //style
         insideCirclePaint.setStyle(Paint.Style.STROKE);
         //stroke width
