@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
@@ -40,9 +39,9 @@ public class ThirdSpeedView extends SpeedView {
             smallMarkPaint,
             insideCirclePaint,
             pointPaint,
+            rotateSpeedPaint,
             circlePaint,
             centerCirclePaint,
-            speedometerPaint,
             speedBackgroundPaint;
 
     private TextPaint speedTextPaint,
@@ -54,6 +53,7 @@ public class ThirdSpeedView extends SpeedView {
 
     private int speedBackgroundColor = Color.TRANSPARENT,
             speedTextColor = Color.WHITE,
+            rotateTextColor = Color.RED,
             smallMarkColor1 = Color.parseColor("#80FFFFFF"),
             smallMarkColor2 = Color.parseColor("#12C3F5"),
             insideCircleColor1 = Color.parseColor("#51FFFFFF"),
@@ -76,9 +76,7 @@ public class ThirdSpeedView extends SpeedView {
     }
 
     public ThirdSpeedView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        initAttributeSet(context, attrs);
+        this(context, attrs, 0);
     }
 
     public ThirdSpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -102,24 +100,22 @@ public class ThirdSpeedView extends SpeedView {
 
         //inside circle
         float temp2 = 84 / 204f;
-        insideCircleRect.set((temp2) * w / 2f, temp2 * h / 2f, w - temp2 * w / 2f, h - temp2 * h / 2f);
+        insideCircleRect.set((temp2) * w / 2f, temp2 * h / 2f,
+                w - temp2 * w / 2f, h - temp2 * h / 2f);
 
         //point path
-        RectF rectF2 = new RectF();
-        rectF2.left = insideCircleRect.left + 20;
-        rectF2.top = insideCircleRect.top + 20;
-        rectF2.right = insideCircleRect.right - 20;
-        rectF2.bottom = insideCircleRect.bottom - 20;
-        pointPath.addArc(rectF2, 150, 240);
+        RectF pointRect = new RectF(insideCircleRect.left + 20, insideCircleRect.top + 20,
+                insideCircleRect.right - 20, insideCircleRect.bottom - 20);
+        pointPath.addArc(pointRect, MIN_DEGREE, MAX_DEGREE - MIN_DEGREE);
 
         //indicatorPath
         float indicatorWidth = w / 64f;
         indicatorPath.moveTo(w / 2f, 0f);
         indicatorPath.lineTo(w / 2f - indicatorWidth, h * 3f / 5f);
         indicatorPath.lineTo(w / 2f + indicatorWidth, h * 3f / 5f);
-        RectF rectF = new RectF(w / 2f - indicatorWidth, h * 3f / 5f - indicatorWidth,
+        RectF indicatorRectF = new RectF(w / 2f - indicatorWidth, h * 3f / 5f - indicatorWidth,
                 w / 2f + indicatorWidth, h * 3f / 5f + indicatorWidth);
-        indicatorPath.addArc(rectF, 0f, 180f);
+        indicatorPath.addArc(indicatorRectF, 0f, 180f);
         indicatorPath.moveTo(0f, 0f);
 
         //markPath markPaint
@@ -160,6 +156,8 @@ public class ThirdSpeedView extends SpeedView {
 
         //points
         canvas.drawPath(pointPath, pointPaint);
+
+        //rotate speed arc
 
         //mark
         canvas.save();
@@ -208,39 +206,48 @@ public class ThirdSpeedView extends SpeedView {
 
     private void init() {
 
-        indicatorPath = new Path();
-        markPath = new Path();
-        smallMarkPath = new Path();
-        //圆弧上的 点
-        pointPath = new Path();
-        rotateSpeedPath = new Path();
+        //paths
+        indicatorPath = new Path();//指针
+        markPath = new Path();//大刻度
+        smallMarkPath = new Path();//小刻度
+        pointPath = new Path();//点
+        rotateSpeedPath = new Path();//转速
 
+        //paints
         indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         insideCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        rotateSpeedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        //text paints
         speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         markTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         speedBackgroundPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         rotateSpeedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
+        //rectF
         insideCircleRect = new RectF();
         speedBackgroundRect = new RectF();
 
+        //set style
         pointPaint.setStyle(Paint.Style.STROKE);
         centerCirclePaint.setStyle(Paint.Style.STROKE);
-//        speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
+
+        //text align
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
 
+        //animator
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
         trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
+
+        //set point effects,to draw a dash line
+        pointPaint.setPathEffect(new DashPathEffect(new float[]{3f, 97f}, 0));
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWithEffects(withEffects);
@@ -249,22 +256,22 @@ public class ThirdSpeedView extends SpeedView {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ThirdSpeedView, 0, 0);
 
-        setIndicatorColor(a.getColor(R.styleable.ThirdSpeedView_indicatorColor, Color.parseColor("#00ffec")));
-        setCenterCircleColor(a.getColor(R.styleable.ThirdSpeedView_centerCircleColor, Color.parseColor("#e0e0e0")));
+        setIndicatorColor(a.getColor(R.styleable.ThirdSpeedView_indicatorColor, Color.parseColor("#1BE4FE")));
+        setCenterCircleColor(a.getColor(R.styleable.ThirdSpeedView_centerCircleColor, Color.parseColor("#51FFFFFF")));
         setMarkColor(a.getColor(R.styleable.ThirdSpeedView_markColor, getMarkColor()));
-        setLowSpeedColor(a.getColor(R.styleable.ThirdSpeedView_lowSpeedColor, Color.parseColor("#37872f")));
-        setMediumSpeedColor(a.getColor(R.styleable.ThirdSpeedView_mediumSpeedColor, Color.parseColor("#a38234")));
-        setHighSpeedColor(a.getColor(R.styleable.ThirdSpeedView_highSpeedColor, Color.parseColor("#9b2020")));
+//        setLowSpeedColor(a.getColor(R.styleable.ThirdSpeedView_lowSpeedColor, Color.parseColor("#37872f")));
+//        setMediumSpeedColor(a.getColor(R.styleable.ThirdSpeedView_mediumSpeedColor, Color.parseColor("#a38234")));
+//        setHighSpeedColor(a.getColor(R.styleable.ThirdSpeedView_highSpeedColor, Color.parseColor("#9b2020")));
         setTextColor(a.getColor(R.styleable.ThirdSpeedView_textColor, Color.WHITE));
-        setBackgroundCircleColor(a.getColor(R.styleable.ThirdSpeedView_backgroundCircleColor, Color.parseColor("#212121")));
-        speedTextColor = a.getColor(R.styleable.ThirdSpeedView_speedTextColor, speedTextColor);
-        speedBackgroundColor = a.getColor(R.styleable.ThirdSpeedView_speedBackgroundColor, speedBackgroundColor);
+        setBackgroundCircleColor(a.getColor(R.styleable.ThirdSpeedView_backgroundCircleColor, Color.TRANSPARENT));
         setSpeedometerWidth(a.getDimension(R.styleable.ThirdSpeedView_speedometerWidth, getSpeedometerWidth()));
-        setMaxSpeed(a.getInt(R.styleable.ThirdSpeedView_maxSpeed, getMaxSpeed()));
+        setMaxSpeed(a.getInt(R.styleable.ThirdSpeedView_maxSpeed, 220));
         setWithTremble(a.getBoolean(R.styleable.ThirdSpeedView_withTremble, isWithTremble()));
         setWithBackgroundCircle(a.getBoolean(R.styleable.ThirdSpeedView_withBackgroundCircle, isWithBackgroundCircle()));
-        withEffects = a.getBoolean(R.styleable.ThirdSpeedView_withEffects, withEffects);
         setSpeedTextSize(a.getDimension(R.styleable.ThirdSpeedView_speedTextSize, getSpeedTextSize()));
+        speedTextColor = a.getColor(R.styleable.ThirdSpeedView_speedTextColor, speedTextColor);
+        speedBackgroundColor = a.getColor(R.styleable.ThirdSpeedView_speedBackgroundColor, speedBackgroundColor);
+        withEffects = a.getBoolean(R.styleable.ThirdSpeedView_withEffects, withEffects);
         String unit = a.getString(R.styleable.ThirdSpeedView_unit);
         a.recycle();
         setUnit((unit != null) ? unit : getUnit());
@@ -289,16 +296,10 @@ public class ThirdSpeedView extends SpeedView {
         //stroke width
         insideCirclePaint.setStrokeWidth(4f);
         pointPaint.setStrokeWidth(4f);
-//        speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         //text size
         speedTextPaint.setTextSize(getSpeedTextSize());
         markTextPaint.setTextSize(getSpeedTextSize());
         rotateSpeedTextPaint.setTextSize(getSpeedTextSize());
-
-
-        PathEffect effects = new DashPathEffect(new float[]{3f, 97f}, 0);
-        pointPaint.setPathEffect(effects);
-
     }
 
     private void cancel() {
