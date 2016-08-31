@@ -197,18 +197,19 @@ public class ThirdSpeedView extends SpeedView {
         canvas.drawCircle(centerX, centerY, indicatorCircleRadius, centerCirclePaint);
 
         //speed text
-        String speed = String.format(Locale.getDefault(), "%.1f",
+        String speedText = String.format(Locale.getDefault(), "%.1f",
                 (degree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + getUnit();
-
-        speedBackgroundRect.set(centerX - (speedTextPaint.measureText(speed) / 2f) - 5,//left
+        speedBackgroundRect.set(centerX - (speedTextPaint.measureText(speedText) / 2f) - 5,//left
                 insideCircleRect.bottom - speedTextPaint.getTextSize(),//top
-                centerX + (speedTextPaint.measureText(speed) / 2f) + 5,//right
+                centerX + (speedTextPaint.measureText(speedText) / 2f) + 5,//right
                 centerY * 1.4f + 4);//bottom
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
+        canvas.drawText(speedText, centerX, centerY * 1.4f, speedTextPaint);
 
-        canvas.drawText(String.format(Locale.getDefault(), "%.1f",
-                (degree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + getUnit(),
-                centerX, centerY * 1.4f, speedTextPaint);
+        //rotate speed text
+        String rotateSpeedText = String.format(Locale.getDefault(), "%.1f",
+                (degree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + " RPM";
+        canvas.drawText(rotateSpeedText, centerX, centerY * 1.8f, rotateSpeedTextPaint);
 
     }
 
@@ -252,6 +253,7 @@ public class ThirdSpeedView extends SpeedView {
 
         //text align
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
+        rotateSpeedTextPaint.setTextAlign(Paint.Align.CENTER);
 
         //animator
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
@@ -267,19 +269,18 @@ public class ThirdSpeedView extends SpeedView {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ThirdSpeedView, 0, 0);
 
+        //default attributes
         setIndicatorColor(a.getColor(R.styleable.ThirdSpeedView_indicatorColor, Color.parseColor("#1BE4FE")));
         setCenterCircleColor(a.getColor(R.styleable.ThirdSpeedView_centerCircleColor, Color.parseColor("#51FFFFFF")));
-        setMarkColor(a.getColor(R.styleable.ThirdSpeedView_markColor, getMarkColor()));
-//        setLowSpeedColor(a.getColor(R.styleable.ThirdSpeedView_lowSpeedColor, Color.parseColor("#37872f")));
-//        setMediumSpeedColor(a.getColor(R.styleable.ThirdSpeedView_mediumSpeedColor, Color.parseColor("#a38234")));
-//        setHighSpeedColor(a.getColor(R.styleable.ThirdSpeedView_highSpeedColor, Color.parseColor("#9b2020")));
+        setMarkColor(a.getColor(R.styleable.ThirdSpeedView_markColor, Color.WHITE));
         setTextColor(a.getColor(R.styleable.ThirdSpeedView_textColor, Color.WHITE));
         setBackgroundCircleColor(a.getColor(R.styleable.ThirdSpeedView_backgroundCircleColor, Color.TRANSPARENT));
         setSpeedometerWidth(a.getDimension(R.styleable.ThirdSpeedView_speedometerWidth, getSpeedometerWidth()));
         setMaxSpeed(a.getInt(R.styleable.ThirdSpeedView_maxSpeed, 220));
-        setWithTremble(a.getBoolean(R.styleable.ThirdSpeedView_withTremble, isWithTremble()));
-        setWithBackgroundCircle(a.getBoolean(R.styleable.ThirdSpeedView_withBackgroundCircle, isWithBackgroundCircle()));
+        setWithTremble(a.getBoolean(R.styleable.ThirdSpeedView_withTremble, false));
+        setWithBackgroundCircle(a.getBoolean(R.styleable.ThirdSpeedView_withBackgroundCircle, true));
         setSpeedTextSize(a.getDimension(R.styleable.ThirdSpeedView_speedTextSize, getSpeedTextSize()));
+        //expand attributes
         speedTextColor = a.getColor(R.styleable.ThirdSpeedView_speedTextColor, speedTextColor);
         speedBackgroundColor = a.getColor(R.styleable.ThirdSpeedView_speedBackgroundColor, speedBackgroundColor);
         withEffects = a.getBoolean(R.styleable.ThirdSpeedView_withEffects, withEffects);
@@ -329,6 +330,11 @@ public class ThirdSpeedView extends SpeedView {
         canceled = true;
         speedAnimator.cancel();
         canceled = false;
+    }
+
+    public void rotateSpeedTo() {
+
+
     }
 
     @Override
