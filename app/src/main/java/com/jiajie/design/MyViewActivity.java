@@ -8,7 +8,7 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.jiajie.design.widgets.speed.SecondSpeedView;
+import com.jiajie.design.widgets.speed.ThirdSpeedView;
 
 /**
  * for my custom view display
@@ -16,11 +16,9 @@ import com.jiajie.design.widgets.speed.SecondSpeedView;
  */
 public class MyViewActivity extends AppCompatActivity {
 
-//    private FirstSpeedView firstSpeedView;
-//    SeekBar seekBar;
-//    TextView textSpeed;
-
-    SecondSpeedView secondSpeedView;
+    //    FirstSpeedView firstSpeedView;
+//        SecondSpeedView secondSpeedView;
+    ThirdSpeedView thirdSpeedView;
     SeekBar seekBar;
     TextView textSpeed;
     CheckBox withTremble, withEffects;
@@ -31,7 +29,8 @@ public class MyViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_view);
 
 //        firstSpeedView = (FirstSpeedView) findViewById(R.id.speed_view);
-        secondSpeedView = (SecondSpeedView) findViewById(R.id.speed_view);
+//        secondSpeedView = (SecondSpeedView) findViewById(R.id.speed_view);
+        thirdSpeedView = (ThirdSpeedView) findViewById(R.id.speed_view);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
         withTremble = (CheckBox) findViewById(R.id.withTremble);
@@ -42,7 +41,8 @@ public class MyViewActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textSpeed.setText(String.format("%d", progress));
 //                firstSpeedView.speedTo(seekBar.getProgress());
-                secondSpeedView.speedTo(seekBar.getProgress());
+//                secondSpeedView.speedTo(seekBar.getProgress());
+                thirdSpeedView.speedTo(seekBar.getProgress());
             }
 
             @Override
@@ -59,14 +59,14 @@ public class MyViewActivity extends AppCompatActivity {
         withTremble.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                secondSpeedView.setWithTremble(isChecked);
+                thirdSpeedView.setWithTremble(isChecked);
             }
         });
 
         withEffects.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                secondSpeedView.setWithEffects(isChecked);
+                thirdSpeedView.setWithEffects(isChecked);
             }
         });
 

@@ -21,7 +21,7 @@ abstract public class SpeedView extends View {
     private boolean withTremble = true,
             withBackgroundCircle = true;
     //最高速度
-    private int maxSpeed = 100;
+    private int maxSpeed = 220;
 
     //color
     private int indicatorColor = Color.RED//指针颜色

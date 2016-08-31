@@ -20,16 +20,19 @@ import java.util.Locale;
 import java.util.Random;
 
 /**
- * SecondSpeedView
+ * ThirdSpeedView
  * Created by jiajie on 16/8/30.
  */
-public class SecondSpeedView extends SpeedView {
+public class ThirdSpeedView extends SpeedView {
 
-    private static final String TAG = "SecondSpeedView";
+    private static final String TAG = "ThirdSpeedView";
 
     private Path indicatorPath,
             markPath,
-            smallMarkPath;
+            smallMarkPath,
+            insideCirclePath,
+            pointPath,
+            rotateSpeedPath;
 
     private Paint circlePaint,
             centerCirclePaint,
@@ -40,17 +43,21 @@ public class SecondSpeedView extends SpeedView {
             speedBackgroundPaint;
 
     private TextPaint speedTextPaint,
-            textPaint;
+            markTextPaint,
+            rotateSpeedTextPaint;
 
     private RectF speedometerRect,
             speedBackgroundRect;
 
-    private int speedBackgroundColor = Color.WHITE,
-            speedTextColor = Color.BLACK;
+    private int speedBackgroundColor = Color.TRANSPARENT,
+            speedTextColor = Color.WHITE,
+            smallMarkEnableColor = Color.parseColor("#12C3F5"),
+            smallMarkDisableColor = Color.parseColor("#80FFFFFF");
+
 
     private boolean canceled = false;
-    private final int MIN_DEGREE = 135,
-            MAX_DEGREE = 135 + 270;
+    private final float MIN_DEGREE = 150f,
+            MAX_DEGREE = MIN_DEGREE + 240f;
     /** to rotate indicator */
     private float degree = MIN_DEGREE;
     private int speed = 0;
@@ -59,18 +66,18 @@ public class SecondSpeedView extends SpeedView {
 
     private boolean withEffects = true;
 
-    public SecondSpeedView(Context context) {
+    public ThirdSpeedView(Context context) {
         super(context);
         init();
     }
 
-    public SecondSpeedView(Context context, AttributeSet attrs) {
+    public ThirdSpeedView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
         initAttributeSet(context, attrs);
     }
 
-    public SecondSpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ThirdSpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
         initAttributeSet(context, attrs);
@@ -93,8 +100,8 @@ public class SecondSpeedView extends SpeedView {
         speedometerRect.set(risk, risk, w - risk, h - risk);
 
         //indicatorPath
-        float indicatorWidth = w / 32f;
-        indicatorPath.moveTo(w / 2f, h / 5f);
+        float indicatorWidth = w / 64f;
+        indicatorPath.moveTo(w / 2f, 0f);
         indicatorPath.lineTo(w / 2f - indicatorWidth, h * 3f / 5f);
         indicatorPath.lineTo(w / 2f + indicatorWidth, h * 3f / 5f);
         RectF rectF = new RectF(w / 2f - indicatorWidth, h * 3f / 5f - indicatorWidth,
@@ -103,18 +110,18 @@ public class SecondSpeedView extends SpeedView {
         indicatorPath.moveTo(0f, 0f);
 
         //markPath markPaint
-        float markHeight = h / 28f;
+        float markHeight = h / 20f;
         markPath.moveTo(w / 2f, 0f);
         markPath.lineTo(w / 2f, markHeight);
         markPath.moveTo(0f, 0f);
-        markPaint.setStrokeWidth(markHeight / 3f);
+        markPaint.setStrokeWidth(markHeight / 4f);
 
         //smallMarkPath smallMarkPaint
-        float smallMarkHeight = h / 20f;
-        smallMarkPath.moveTo(w / 2f, getSpeedometerWidth());
-        smallMarkPath.lineTo(w / 2f, getSpeedometerWidth() + smallMarkHeight);
+        float smallMarkHeight = h / 40f;
+        smallMarkPath.moveTo(w / 2f, smallMarkHeight);
+        smallMarkPath.lineTo(w / 2f, smallMarkHeight * 2);
         smallMarkPath.moveTo(0f, 0f);
-        smallMarkPaint.setStrokeWidth(3f);
+        smallMarkPaint.setStrokeWidth(smallMarkHeight / 3f);
 
     }
 
@@ -128,42 +135,30 @@ public class SecondSpeedView extends SpeedView {
         float centerX = width / 2f;
         float centerY = height / 2f;
         float backgroundCircleRadius = width / 2f;
-        float indicatorCircleRadius = width / 12f;
-
-        float lowArc = 135f;
-        float mediumArc = lowArc + 160f;
-        float highArc = mediumArc + 75f;
+        float indicatorCircleRadius = width / 55f;
 
         //background circle
         if (isWithBackgroundCircle()) {
             canvas.drawCircle(centerX, centerY, backgroundCircleRadius, circlePaint);
         }
 
-        //low speed
-        speedometerPaint.setColor(getLowSpeedColor());
-        canvas.drawArc(speedometerRect, lowArc, 160f, false, speedometerPaint);
-        //medium speed
-        speedometerPaint.setColor(getMediumSpeedColor());
-        canvas.drawArc(speedometerRect, mediumArc, 75f, false, speedometerPaint);
-        //high speed
-        speedometerPaint.setColor(getHighSpeedColor());
-        canvas.drawArc(speedometerRect, highArc, 35f, false, speedometerPaint);
-
-        //mark 8
+        //mark
         canvas.save();
-        canvas.rotate(135f + 90f, centerX, centerY);
-        for (int i = 135; i <= 345; i += 30) {
-            canvas.rotate(30f, centerX, centerY);
+        canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
+        float markPer = (MAX_DEGREE - MIN_DEGREE) / 11f;
+        float smallMarkPer = (MAX_DEGREE - MIN_DEGREE) / 44f;
+        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += markPer) {
             canvas.drawPath(markPath, markPaint);
+            canvas.rotate(markPer, centerX, centerY);
         }
         canvas.restore();
 
-        //small mark 26
+        //small mark
         canvas.save();
-        canvas.rotate(135f + 90f, centerX, centerY);
-        for (int i = 135; i < 395; i += 10) {
-            canvas.rotate(10f, centerX, centerY);
+        canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
+        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += smallMarkPer) {
             canvas.drawPath(smallMarkPath, smallMarkPaint);
+            canvas.rotate(smallMarkPer, centerX, centerY);
         }
         canvas.restore();
 
@@ -176,30 +171,36 @@ public class SecondSpeedView extends SpeedView {
         canvas.drawCircle(centerX, centerY, indicatorCircleRadius, centerCirclePaint);
 
         //text and background
-        textPaint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText("00", width / 5f, height * 6f / 7f, textPaint);
-        textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText(String.format(Locale.getDefault(), "%d", getMaxSpeed()),
-                width * 4 / 5f, height * 6 / 7f, textPaint);
+//        textPaint.setTextAlign(Paint.Align.LEFT);
+//        canvas.drawText("00", width / 5f, height * 6f / 7f, textPaint);
+//        textPaint.setTextAlign(Paint.Align.RIGHT);
+//        canvas.drawText(String.format(Locale.getDefault(), "%d", getMaxSpeed()),
+//                width * 4 / 5f, height * 6 / 7f, textPaint);
+
         String speed = String.format(Locale.getDefault(), "%.1f",
                 (degree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + getUnit();
 
         speedBackgroundRect.set(centerX - (speedTextPaint.measureText(speed) / 2f) - 5,//left
                 speedometerRect.bottom - speedTextPaint.getTextSize(),//top
                 centerX + (speedTextPaint.measureText(speed) / 2f) + 5,//right
-                speedometerRect.bottom + 4);//bottom
-
+                centerY * 1.4f + 4);//bottom
         canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
+
         canvas.drawText(String.format(Locale.getDefault(), "%.1f",
                 (degree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + getUnit(),
-                getWidth() / 2f, speedometerRect.bottom, speedTextPaint);
+                centerX, centerY * 1.4f, speedTextPaint);
 
     }
 
+
     private void init() {
+
         indicatorPath = new Path();
         markPath = new Path();
         smallMarkPath = new Path();
+        insideCirclePath = new Path();
+        pointPath = new Path();
+        rotateSpeedPath = new Path();
 
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -207,13 +208,16 @@ public class SecondSpeedView extends SpeedView {
         speedometerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
         speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        markTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         speedBackgroundPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        rotateSpeedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
 
         speedometerRect = new RectF();
         speedBackgroundRect = new RectF();
 
+        centerCirclePaint.setStyle(Paint.Style.STROKE);
         speedometerPaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
@@ -227,41 +231,45 @@ public class SecondSpeedView extends SpeedView {
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.SecondSpeedView, 0, 0);
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ThirdSpeedView, 0, 0);
 
-        setIndicatorColor(a.getColor(R.styleable.SecondSpeedView_indicatorColor, Color.parseColor("#00ffec")));
-        setCenterCircleColor(a.getColor(R.styleable.SecondSpeedView_centerCircleColor, Color.parseColor("#e0e0e0")));
-        setMarkColor(a.getColor(R.styleable.SecondSpeedView_markColor, getMarkColor()));
-        setLowSpeedColor(a.getColor(R.styleable.SecondSpeedView_lowSpeedColor, Color.parseColor("#37872f")));
-        setMediumSpeedColor(a.getColor(R.styleable.SecondSpeedView_mediumSpeedColor, Color.parseColor("#a38234")));
-        setHighSpeedColor(a.getColor(R.styleable.SecondSpeedView_highSpeedColor, Color.parseColor("#9b2020")));
-        setTextColor(a.getColor(R.styleable.SecondSpeedView_textColor, Color.WHITE));
-        setBackgroundCircleColor(a.getColor(R.styleable.SecondSpeedView_backgroundCircleColor, Color.parseColor("#212121")));
-        speedTextColor = a.getColor(R.styleable.SecondSpeedView_speedTextColor, speedTextColor);
-        speedBackgroundColor = a.getColor(R.styleable.SecondSpeedView_speedBackgroundColor, speedBackgroundColor);
-        setSpeedometerWidth(a.getDimension(R.styleable.SecondSpeedView_speedometerWidth, getSpeedometerWidth()));
-        setMaxSpeed(a.getInt(R.styleable.SecondSpeedView_maxSpeed, getMaxSpeed()));
-        setWithTremble(a.getBoolean(R.styleable.SecondSpeedView_withTremble, isWithTremble()));
-        setWithBackgroundCircle(a.getBoolean(R.styleable.SecondSpeedView_withBackgroundCircle, isWithBackgroundCircle()));
-        withEffects = a.getBoolean(R.styleable.SecondSpeedView_withEffects, withEffects);
-        setSpeedTextSize(a.getDimension(R.styleable.SecondSpeedView_speedTextSize, getSpeedTextSize()));
-        String unit = a.getString(R.styleable.SecondSpeedView_unit);
+        setIndicatorColor(a.getColor(R.styleable.ThirdSpeedView_indicatorColor, Color.parseColor("#00ffec")));
+        setCenterCircleColor(a.getColor(R.styleable.ThirdSpeedView_centerCircleColor, Color.parseColor("#e0e0e0")));
+        setMarkColor(a.getColor(R.styleable.ThirdSpeedView_markColor, getMarkColor()));
+        setLowSpeedColor(a.getColor(R.styleable.ThirdSpeedView_lowSpeedColor, Color.parseColor("#37872f")));
+        setMediumSpeedColor(a.getColor(R.styleable.ThirdSpeedView_mediumSpeedColor, Color.parseColor("#a38234")));
+        setHighSpeedColor(a.getColor(R.styleable.ThirdSpeedView_highSpeedColor, Color.parseColor("#9b2020")));
+        setTextColor(a.getColor(R.styleable.ThirdSpeedView_textColor, Color.WHITE));
+        setBackgroundCircleColor(a.getColor(R.styleable.ThirdSpeedView_backgroundCircleColor, Color.parseColor("#212121")));
+        speedTextColor = a.getColor(R.styleable.ThirdSpeedView_speedTextColor, speedTextColor);
+        speedBackgroundColor = a.getColor(R.styleable.ThirdSpeedView_speedBackgroundColor, speedBackgroundColor);
+        setSpeedometerWidth(a.getDimension(R.styleable.ThirdSpeedView_speedometerWidth, getSpeedometerWidth()));
+        setMaxSpeed(a.getInt(R.styleable.ThirdSpeedView_maxSpeed, getMaxSpeed()));
+        setWithTremble(a.getBoolean(R.styleable.ThirdSpeedView_withTremble, isWithTremble()));
+        setWithBackgroundCircle(a.getBoolean(R.styleable.ThirdSpeedView_withBackgroundCircle, isWithBackgroundCircle()));
+        withEffects = a.getBoolean(R.styleable.ThirdSpeedView_withEffects, withEffects);
+        setSpeedTextSize(a.getDimension(R.styleable.ThirdSpeedView_speedTextSize, getSpeedTextSize()));
+        String unit = a.getString(R.styleable.ThirdSpeedView_unit);
         a.recycle();
         setUnit((unit != null) ? unit : getUnit());
         setWithEffects(withEffects);
     }
 
     private void initDraw() {
+        circlePaint.setColor(getBackgroundCircleColor());
+        centerCirclePaint.setColor(getCenterCircleColor());
         indicatorPaint.setColor(getIndicatorColor());
         speedometerPaint.setStrokeWidth(getSpeedometerWidth());
         markPaint.setColor(getMarkColor());
-        smallMarkPaint.setColor(getMarkColor());
+        smallMarkPaint.setColor(smallMarkEnableColor);
+        speedBackgroundPaint.setColor(speedBackgroundColor);
+
         speedTextPaint.setColor(speedTextColor);
         speedTextPaint.setTextSize(getSpeedTextSize());
-        textPaint.setColor(getTextColor());
-        speedBackgroundPaint.setColor(speedBackgroundColor);
-        centerCirclePaint.setColor(getCenterCircleColor());
-        circlePaint.setColor(getBackgroundCircleColor());
+        markTextPaint.setColor(getTextColor());
+        markTextPaint.setTextSize(getSpeedTextSize());
+        rotateSpeedTextPaint.setColor(Color.RED);
+        rotateSpeedTextPaint.setTextSize(getSpeedTextSize());
     }
 
     private void cancel() {
@@ -297,7 +305,7 @@ public class SecondSpeedView extends SpeedView {
         speed = (speed > getMaxSpeed()) ? getMaxSpeed() : (speed < 0) ? 0 : speed;
         this.speed = speed;
 
-        //135~405
+        //135~270
         float newDegree = (float) speed * (MAX_DEGREE - MIN_DEGREE) / getMaxSpeed() + MIN_DEGREE;
 
         if (newDegree == degree) return;
@@ -433,5 +441,6 @@ public class SecondSpeedView extends SpeedView {
         this.speedTextColor = speedTextColor;
         invalidate();
     }
+
 
 }
