@@ -19,8 +19,8 @@ public class MyViewActivity extends AppCompatActivity {
     //    FirstSpeedView firstSpeedView;
 //        SecondSpeedView secondSpeedView;
     ThirdSpeedView thirdSpeedView;
-    SeekBar seekBar;
-    TextView textSpeed;
+    SeekBar seekBar,seekBar2;
+    TextView textSpeed,textSpeed2;
     CheckBox withTremble, withEffects;
 
     @Override
@@ -32,7 +32,9 @@ public class MyViewActivity extends AppCompatActivity {
 //        secondSpeedView = (SecondSpeedView) findViewById(R.id.speed_view);
         thirdSpeedView = (ThirdSpeedView) findViewById(R.id.speed_view);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
+        seekBar2 = (SeekBar) findViewById(R.id.seekBar2);
         textSpeed = (TextView) findViewById(R.id.textSpeed);
+        textSpeed2 = (TextView) findViewById(R.id.textSpeed2);
         withTremble = (CheckBox) findViewById(R.id.withTremble);
         withEffects = (CheckBox) findViewById(R.id.withEffects);
 
@@ -47,12 +49,26 @@ public class MyViewActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
+        seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                textSpeed2.setText(String.format("%d", progress));
+                thirdSpeedView.rotateSpeedTo(seekBar.getProgress());
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 

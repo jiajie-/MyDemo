@@ -65,10 +65,14 @@ public class ThirdSpeedView extends SpeedView {
     private boolean canceled = false;
     private final float MIN_DEGREE = 150f,
             MAX_DEGREE = MIN_DEGREE + 240f;
+    private final float MIN_ROTATE_DEGREE = 0f,
+            MAX_ROTATE_DEGREE = 120f;
     /** to rotate indicator */
     private float degree = MIN_DEGREE;
+    private float rotateDegree = MIN_ROTATE_DEGREE;
     private int speed = 0;
-    private ValueAnimator speedAnimator,
+    private int rotateSpeed = 0;
+    private ValueAnimator speedAnimator, rotateSpeedAnimator,
             trembleAnimator;
 
     private boolean withEffects = true;
@@ -166,7 +170,7 @@ public class ThirdSpeedView extends SpeedView {
         canvas.drawPath(pointPath, pointPaint);
 
         //rotate speed arc
-        canvas.drawArc(rotateSpeedRect, 30f, 120f, false, rotateSpeedPaint);
+        canvas.drawArc(rotateSpeedRect, 30f, rotateDegree, false, rotateSpeedPaint);
 
         //mark
         canvas.save();
@@ -207,8 +211,8 @@ public class ThirdSpeedView extends SpeedView {
         canvas.drawText(speedText, centerX, centerY * 1.4f, speedTextPaint);
 
         //rotate speed text
-        String rotateSpeedText = String.format(Locale.getDefault(), "%.1f",
-                (degree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + " RPM";
+        String rotateSpeedText = String.format(Locale.getDefault(), "%d",
+                (int) ((rotateDegree - MIN_ROTATE_DEGREE) * 5000 / (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE))) + " RPM";
         canvas.drawText(rotateSpeedText, centerX, centerY * 1.8f, rotateSpeedTextPaint);
 
     }
@@ -257,6 +261,7 @@ public class ThirdSpeedView extends SpeedView {
 
         //animator
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
+        rotateSpeedAnimator = ValueAnimator.ofFloat(0f, 1f);
         trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
 
         //set point effects,to draw a dash line
@@ -303,7 +308,7 @@ public class ThirdSpeedView extends SpeedView {
         speedTextPaint.setColor(speedTextColor);
         markTextPaint.setColor(getTextColor());
         rotateSpeedTextPaint.setColor(rotateTextColor);
-        rotateSpeedPaint.setColor(rotateSpeedColor1);//TODO 根据情况
+        rotateSpeedPaint.setColor(rotateSpeedColor2);//TODO 根据情况
         //style
         insideCirclePaint.setStyle(Paint.Style.STROKE);
         //stroke width
@@ -332,9 +337,30 @@ public class ThirdSpeedView extends SpeedView {
         canceled = false;
     }
 
-    public void rotateSpeedTo() {
+    public void rotateSpeedTo(int rotateSpeed) {
+        rotateSpeedTo(rotateSpeed, 2000);
+    }
 
+    public void rotateSpeedTo(int rotateSpeed, long moveDuration) {
+        int maxRotateSpeed = 5000;
+        //0~maxRotateSpeed
+        rotateSpeed = (rotateSpeed > maxRotateSpeed) ? maxRotateSpeed : (rotateSpeed < 0) ? 0 : rotateSpeed;
+        this.rotateSpeed = rotateSpeed;
 
+        //30~150
+        float newDegree = (float) rotateSpeed * (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE) /
+                maxRotateSpeed + MIN_ROTATE_DEGREE;
+
+        if (newDegree == rotateDegree) return;
+
+        //取消上次动画效果
+        rotateSpeedAnimator.cancel();
+
+        rotateSpeedAnimator = ValueAnimator.ofFloat(rotateDegree, newDegree);
+        rotateSpeedAnimator.setInterpolator(new DecelerateInterpolator());
+        rotateSpeedAnimator.setDuration(moveDuration);
+        rotateSpeedAnimator.addUpdateListener(rotateListener);
+        rotateSpeedAnimator.start();
     }
 
     @Override
@@ -386,6 +412,14 @@ public class ThirdSpeedView extends SpeedView {
         trembleAnimator.addListener(animatorListener);
         trembleAnimator.start();
     }
+
+    private ValueAnimator.AnimatorUpdateListener rotateListener = new ValueAnimator.AnimatorUpdateListener() {
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            rotateDegree = (float) rotateSpeedAnimator.getAnimatedValue();
+            postInvalidate();
+        }
+    };
 
     private ValueAnimator.AnimatorUpdateListener speedListener = new ValueAnimator.AnimatorUpdateListener() {
         @Override
