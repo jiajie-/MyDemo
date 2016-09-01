@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -190,6 +191,12 @@ abstract public class SpeedView extends View {
      * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)}.
      */
     abstract public int getPercentSpeed();
+
+    protected int getTextHeight(String text, Paint paint) {
+        Rect textBound = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textBound);
+        return textBound.bottom - textBound.top;
+    }
 
     public int getIndicatorColor() {
         return indicatorColor;

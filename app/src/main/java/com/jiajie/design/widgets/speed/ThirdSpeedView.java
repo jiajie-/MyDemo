@@ -78,6 +78,8 @@ public class ThirdSpeedView extends SpeedView {
     private static final float SMALL_MARK_DEGREE = (MAX_DEGREE - MIN_DEGREE) / 44f;
     private static final float MARK_DEGREE = (MAX_DEGREE - MIN_DEGREE) / 11f;
     private static final float INSIDE_CIRCLE_SCALE = 120f / 204f;
+    private static final float MARK_SCALE = 166f / 204f;
+
     /** to rotate indicator */
     private float mDegree = MIN_DEGREE;
     private float mRotateDegree = MIN_ROTATE_DEGREE;
@@ -215,7 +217,7 @@ public class ThirdSpeedView extends SpeedView {
         mHeight = h;
         centerX = mWidth / 2;
         centerY = mHeight / 2;
-        mMarkTextRadius = centerX - markTextPaint.getTextSize();
+        mMarkTextRadius = centerY - getTextHeight("0", markTextPaint);//0,20,220 :the same height
 
         //inside circle
         mInsideCircleRadius = INSIDE_CIRCLE_SCALE * centerX;
@@ -268,16 +270,17 @@ public class ThirdSpeedView extends SpeedView {
         }
 
         //scale
-//        int scaleValue = 0;
-//        for (int i = 0; i < 12; i++) {
-//            double angle = 240f / 11f * i + 60f;
-//            String value = String.valueOf(scaleValue);
-//            float scaleValuePositionX = (float) (centerX - Math.sin(Math.toRadians(angle)) * width / 2);
-//            float scaleValuePositionY = (float) (centerY + Math.cos(Math.toRadians(angle)) * height / 2);
-//            canvas.drawText(value, scaleValuePositionX,
-//                    scaleValuePositionY, markTextPaint);
-//            scaleValue += 20;
-//        }
+        int scaleValue = 0;
+        for (int i = 0; i < 12; i++) {
+            double angle = MARK_DEGREE * i + 60f;
+            String value = String.valueOf(scaleValue);
+            float textWidth = markTextPaint.measureText(value);//20,40,60
+            float scaleValuePositionX = (float) (centerX - Math.sin(Math.toRadians(angle)) * mMarkTextRadius);
+            float scaleValuePositionY = (float) (centerY + Math.cos(Math.toRadians(angle)) * mMarkTextRadius);
+            canvas.drawText(value, scaleValuePositionX - textWidth / 2,
+                    scaleValuePositionY + getTextHeight(value, markTextPaint) / 2, markTextPaint);
+            scaleValue += 20;
+        }
 
         //inside circle
         canvas.drawArc(insideCircleRect, MIN_DEGREE, (MAX_DEGREE - MIN_DEGREE),
@@ -285,6 +288,9 @@ public class ThirdSpeedView extends SpeedView {
 
         //points
         canvas.drawPath(pointPath, pointPaint);
+
+        //scale canvas
+        canvas.scale(MARK_SCALE, MARK_SCALE, centerX, centerY);
 
         //mark
         canvas.save();
@@ -310,6 +316,7 @@ public class ThirdSpeedView extends SpeedView {
     protected void drawActiveSpeedView(Canvas canvas) {
         float indicatorCircleRadius = mWidth / 45f;
 
+        canvas.scale(MARK_SCALE, MARK_SCALE, centerX, centerY);
         //rotate speed arc
         canvas.drawArc(rotateSpeedRect, 30f, mRotateDegree, false, rotateSpeedPaint);
 
