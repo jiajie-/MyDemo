@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 
 import com.jiajie.design.R;
@@ -31,8 +33,7 @@ public class ThirdSpeedView extends SpeedView {
     private Path indicatorPath,
             markPath,
             smallMarkPath,
-            pointPath,
-            rotateSpeedPath;
+            pointPath;
 
     private Paint indicatorPaint,
             markPaint,
@@ -40,7 +41,7 @@ public class ThirdSpeedView extends SpeedView {
             insideCirclePaint,
             pointPaint,
             rotateSpeedPaint,
-            circlePaint,
+            backgroundCirclePaint,
             centerCirclePaint,
             speedBackgroundPaint;
 
@@ -75,6 +76,10 @@ public class ThirdSpeedView extends SpeedView {
     private ValueAnimator speedAnimator, rotateSpeedAnimator,
             trembleAnimator;
 
+    protected Bitmap dashboardBitmap;
+    protected Paint dashboardBitmapPaint;
+
+
     private boolean withEffects = true;
 
     public ThirdSpeedView(Context context) {
@@ -104,11 +109,15 @@ public class ThirdSpeedView extends SpeedView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        Log.d(TAG, "onSizeChanged: ");
+
+        initDraw();
+
 
         //inside circle
-        float temp2 = 84 / 204f;
-        insideCircleRect.set((temp2) * w / 2f, temp2 * h / 2f,
-                w - temp2 * w / 2f, h - temp2 * h / 2f);
+        float scale = 84 / 204f;
+        insideCircleRect.set((scale) * w / 2f, scale * h / 2f,
+                w - scale * w / 2f, h - scale * h / 2f);
 
         //point path
         RectF pointRect = new RectF(insideCircleRect.left + 20, insideCircleRect.top + 20,
@@ -143,34 +152,42 @@ public class ThirdSpeedView extends SpeedView {
         float rotateWidth = h / 65f;
         rotateSpeedRect.set(h / 40f, h / 40f, w - smallMarkHeight, h - smallMarkHeight);
         rotateSpeedPaint.setStrokeWidth(rotateWidth);
+
+        if (dashboardBitmap != null) {
+            dashboardBitmap.recycle();
+        }
+        dashboardBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(dashboardBitmap);
+        drawIntoBitmapForCache(canvas);
+
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        initDraw();
-
+    private void drawIntoBitmapForCache(Canvas canvas) {
         int width = getWidth();
         int height = getHeight();
+
         float centerX = width / 2f;
         float centerY = height / 2f;
+
         float backgroundCircleRadius = width / 2f;
         float indicatorCircleRadius = width / 55f;
 
         //background circle
         if (isWithBackgroundCircle()) {
-            canvas.drawCircle(centerX, centerY, backgroundCircleRadius, circlePaint);
+            canvas.drawCircle(centerX, centerY, backgroundCircleRadius, backgroundCirclePaint);
         }
+        Log.d(TAG, "drawIntoBitmapForCache: background circle");
 
         //inside circle
         canvas.drawArc(insideCircleRect, MIN_DEGREE, (MAX_DEGREE - MIN_DEGREE),
                 false, insideCirclePaint);
+        Log.d(TAG, "drawIntoBitmapForCache: inside circle");
+
 
         //points
         canvas.drawPath(pointPath, pointPaint);
+        Log.d(TAG, "drawIntoBitmapForCache: points");
 
-        //rotate speed arc
-        canvas.drawArc(rotateSpeedRect, 30f, rotateDegree, false, rotateSpeedPaint);
 
         //mark
         canvas.save();
@@ -191,6 +208,75 @@ public class ThirdSpeedView extends SpeedView {
             canvas.rotate(smallMarkPer, centerX, centerY);
         }
         canvas.restore();
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        initDraw();
+
+        //如果仪表盘已经存在了，则直接绘制出来
+        if (null != dashboardBitmap) {
+            Log.e(TAG, "onDraw: 如果仪表盘已经存在了，则直接绘制出来");
+            canvas.drawBitmap(dashboardBitmap, 0, 0, dashboardBitmapPaint);
+        }
+
+        int width = getWidth();
+        int height = getHeight();
+
+        float centerX = width / 2f;
+        float centerY = height / 2f;
+
+        float backgroundCircleRadius = width / 2f;
+        float indicatorCircleRadius = width / 55f;
+
+        //background circle
+//        if (isWithBackgroundCircle()) {
+//            canvas.drawCircle(centerX, centerY, backgroundCircleRadius, backgroundCirclePaint);
+//        }
+
+        //scale
+        int scaleValue = 0;
+        for (int i = 0; i < 12; i++) {
+            double angle = 240f / 11f * i + 60f;
+            String value = String.valueOf(scaleValue);
+            float scaleValuePositionX = (float) (centerX - Math.sin(Math.toRadians(angle)) * width / 2);
+            float scaleValuePositionY = (float) (centerY + Math.cos(Math.toRadians(angle)) * height / 2);
+            canvas.drawText(value, scaleValuePositionX,
+                    scaleValuePositionY, markTextPaint);
+            scaleValue += 20;
+        }
+
+        //inside circle
+//        canvas.drawArc(insideCircleRect, MIN_DEGREE, (MAX_DEGREE - MIN_DEGREE),
+//                false, insideCirclePaint);
+
+        //points
+//        canvas.drawPath(pointPath, pointPaint);
+
+        //rotate speed arc
+        canvas.drawArc(rotateSpeedRect, 30f, rotateDegree, false, rotateSpeedPaint);
+
+//        //mark
+//        canvas.save();
+//        canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
+//        float markPer = (MAX_DEGREE - MIN_DEGREE) / 11f;
+//        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += markPer) {
+//            canvas.drawPath(markPath, markPaint);
+//            canvas.rotate(markPer, centerX, centerY);
+//        }
+//        canvas.restore();
+//
+//        //small mark
+//        canvas.save();
+//        canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
+//        float smallMarkPer = (MAX_DEGREE - MIN_DEGREE) / 44f;
+//        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += smallMarkPer) {
+//            canvas.drawPath(smallMarkPath, smallMarkPaint);
+//            canvas.rotate(smallMarkPer, centerX, centerY);
+//        }
+//        canvas.restore();
 
         //indicator
         canvas.save();
@@ -225,7 +311,6 @@ public class ThirdSpeedView extends SpeedView {
         markPath = new Path();//大刻度
         smallMarkPath = new Path();//小刻度
         pointPath = new Path();//点
-        rotateSpeedPath = new Path();//转速
 
         //paints
         indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -234,8 +319,19 @@ public class ThirdSpeedView extends SpeedView {
         insideCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         rotateSpeedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        backgroundCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        Paint paint = new Paint();
+        paint.setStrokeJoin(Paint.Join.ROUND); //平滑效果
+        paint.setDither(true); //防抖动
+        paint.setAntiAlias(true);  //消除锯齿
+        paint.setStyle(Paint.Style.STROKE);  //设置样式
+
+
+        dashboardBitmapPaint = new Paint(paint);
+
+        dashboardBitmapPaint.setFilterBitmap(true);
 
         //text paints
         speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -282,7 +378,7 @@ public class ThirdSpeedView extends SpeedView {
         setBackgroundCircleColor(a.getColor(R.styleable.ThirdSpeedView_backgroundCircleColor, Color.TRANSPARENT));
         setSpeedometerWidth(a.getDimension(R.styleable.ThirdSpeedView_speedometerWidth, getSpeedometerWidth()));
         setMaxSpeed(a.getInt(R.styleable.ThirdSpeedView_maxSpeed, 220));
-        setWithTremble(a.getBoolean(R.styleable.ThirdSpeedView_withTremble, false));
+        setWithTremble(a.getBoolean(R.styleable.ThirdSpeedView_withTremble, true));
         setWithBackgroundCircle(a.getBoolean(R.styleable.ThirdSpeedView_withBackgroundCircle, true));
         setSpeedTextSize(a.getDimension(R.styleable.ThirdSpeedView_speedTextSize, getSpeedTextSize()));
         //expand attributes
@@ -302,7 +398,7 @@ public class ThirdSpeedView extends SpeedView {
         smallMarkPaint.setColor(smallMarkColor1);//TODO 根据情况
         insideCirclePaint.setColor(insideCircleColor1);//TODO 根据情况
         pointPaint.setColor(insideCircleColor1);
-        circlePaint.setColor(getBackgroundCircleColor());
+        backgroundCirclePaint.setColor(getBackgroundCircleColor());
         centerCirclePaint.setColor(getCenterCircleColor());
         speedBackgroundPaint.setColor(speedBackgroundColor);
         speedTextPaint.setColor(speedTextColor);
@@ -486,10 +582,6 @@ public class ThirdSpeedView extends SpeedView {
         return speed * 100 / getMaxSpeed();
     }
 
-    public boolean isWithEffects() {
-        return withEffects;
-    }
-
     public void setWithEffects(boolean withEffects) {
         this.withEffects = withEffects;
         if (withEffects) {
@@ -505,24 +597,5 @@ public class ThirdSpeedView extends SpeedView {
         }
         invalidate();
     }
-
-    public int getSpeedBackgroundColor() {
-        return speedBackgroundColor;
-    }
-
-    public void setSpeedBackgroundColor(int speedBackgroundColor) {
-        this.speedBackgroundColor = speedBackgroundColor;
-        invalidate();
-    }
-
-    public int getSpeedTextColor() {
-        return speedTextColor;
-    }
-
-    public void setSpeedTextColor(int speedTextColor) {
-        this.speedTextColor = speedTextColor;
-        invalidate();
-    }
-
 
 }

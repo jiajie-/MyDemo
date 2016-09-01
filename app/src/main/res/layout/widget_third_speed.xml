@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:max="100"/>
+            android:max="220"/>
 
         <TextView
             android:id="@+id/textSpeed"
