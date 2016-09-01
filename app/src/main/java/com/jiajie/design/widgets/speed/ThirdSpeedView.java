@@ -65,16 +65,19 @@ public class ThirdSpeedView extends SpeedView {
     private float mInsideCircleRadius,
             mMarkTextRadius,
             mWidth,
-            mHeight;
+            mHeight,
+            centerX,
+            centerY,
+            indicatorWidth;
 
-    private final float SMALL_MARK_DEGREE = 240f / 44f;
-    private final float MARK_DEGREE = 240f / 11f;
-    private final float INSIDE_CIRCLE_SCALE = 120f / 204f;
-
-    private final float MIN_DEGREE = 150f,
+    private static final float MIN_DEGREE = 150f,
             MAX_DEGREE = MIN_DEGREE + 240f;
-    private final float MIN_ROTATE_DEGREE = 0f,
+    private static final float MIN_ROTATE_DEGREE = 0f,
             MAX_ROTATE_DEGREE = 120f;
+
+    private static final float SMALL_MARK_DEGREE = (MAX_DEGREE - MIN_DEGREE) / 44f;
+    private static final float MARK_DEGREE = (MAX_DEGREE - MIN_DEGREE) / 11f;
+    private static final float INSIDE_CIRCLE_SCALE = 120f / 204f;
     /** to rotate indicator */
     private float mDegree = MIN_DEGREE;
     private float mRotateDegree = MIN_ROTATE_DEGREE;
@@ -82,6 +85,7 @@ public class ThirdSpeedView extends SpeedView {
     private int mRotateSpeed = 0;
     private boolean mWithEffects = true;
     private boolean mCanceled = false;
+    private int mMaxRotateSpeed = 8000;
 
     private ValueAnimator speedAnimator,
             rotateSpeedAnimator,
@@ -209,13 +213,14 @@ public class ThirdSpeedView extends SpeedView {
 
         mWidth = w;
         mHeight = h;
-        mInsideCircleRadius = INSIDE_CIRCLE_SCALE * mWidth;
-        mMarkTextRadius = mWidth - markTextPaint.getTextSize();
+        centerX = mWidth / 2;
+        centerY = mHeight / 2;
+        mMarkTextRadius = centerX - markTextPaint.getTextSize();
 
         //inside circle
-        float scale = 84 / 204f;
-        insideCircleRect.set((scale) * w / 2f, scale * h / 2f,
-                w - scale * w / 2f, h - scale * h / 2f);
+        mInsideCircleRadius = INSIDE_CIRCLE_SCALE * centerX;
+        insideCircleRect.set(centerX - mInsideCircleRadius, centerY - mInsideCircleRadius,
+                centerX + mInsideCircleRadius, centerY + mInsideCircleRadius);
 
         //point path
         RectF pointRect = new RectF(insideCircleRect.left + 20, insideCircleRect.top + 20,
@@ -223,44 +228,39 @@ public class ThirdSpeedView extends SpeedView {
         pointPath.addArc(pointRect, MIN_DEGREE, MAX_DEGREE - MIN_DEGREE);
 
         //indicatorPath
-        float indicatorWidth = w / 64f;
-        indicatorPath.moveTo(w / 2f, 0f);
-        indicatorPath.lineTo(w / 2f - indicatorWidth, h * 3f / 5f);
-        indicatorPath.lineTo(w / 2f + indicatorWidth, h * 3f / 5f);
-        RectF indicatorRectF = new RectF(w / 2f - indicatorWidth, h * 3f / 5f - indicatorWidth,
-                w / 2f + indicatorWidth, h * 3f / 5f + indicatorWidth);
+        indicatorWidth = mWidth / 64f;
+        indicatorPath.moveTo(centerX, 0f);
+        indicatorPath.lineTo(centerX - indicatorWidth, mHeight * 0.5f);
+        indicatorPath.lineTo(centerX + indicatorWidth, mHeight * 0.5f);
+        RectF indicatorRectF = new RectF(centerX - indicatorWidth, mHeight * 0.5f - indicatorWidth,
+                centerY + indicatorWidth, mHeight * 0.5f + indicatorWidth);
         indicatorPath.addArc(indicatorRectF, 0f, 180f);
         indicatorPath.moveTo(0f, 0f);
 
         //markPath markPaint
-        float markHeight = h / 20f;
-        markPath.moveTo(w / 2f, 0f);
-        markPath.lineTo(w / 2f, markHeight);
+        float markHeight = mHeight / 20f;
+        markPath.moveTo(centerX, 0f);
+        markPath.lineTo(centerX, markHeight);
         markPath.moveTo(0f, 0f);
         markPaint.setStrokeWidth(markHeight / 4f);
 
         //smallMarkPath smallMarkPaint
-        float smallMarkHeight = h / 40f;
-        smallMarkPath.moveTo(w / 2f, smallMarkHeight);
-        smallMarkPath.lineTo(w / 2f, smallMarkHeight * 2);
+        float smallMarkHeight = mHeight / 40f;
+        smallMarkPath.moveTo(centerX, smallMarkHeight);
+        smallMarkPath.lineTo(centerX, smallMarkHeight * 2);
         smallMarkPath.moveTo(0f, 0f);
         smallMarkPaint.setStrokeWidth(smallMarkHeight / 3f);
 
         //rotateSpeedRectF rotateSpeedPaint
-        float rotateWidth = h / 65f;
-        rotateSpeedRect.set(h / 40f, h / 40f, w - smallMarkHeight, h - smallMarkHeight);
+        float rotateWidth = mHeight / 65f;
+        rotateSpeedRect.set(mWidth / 40f, mWidth / 40f, mHeight - rotateWidth, mHeight - rotateWidth);
         rotateSpeedPaint.setStrokeWidth(rotateWidth);
     }
 
     @Override
     protected void drawStaticSpeedView(Canvas canvas) {
         Log.d(TAG, "drawStaticSpeedView: ");
-        int width = getWidth();
-        int height = getHeight();
-        float centerX = width / 2f;
-        float centerY = height / 2f;
-
-        float backgroundCircleRadius = width / 2f;
+        float backgroundCircleRadius = mWidth / 2f;
 
         //background circle
         if (isWithBackgroundCircle()) {
@@ -289,31 +289,26 @@ public class ThirdSpeedView extends SpeedView {
         //mark
         canvas.save();
         canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
-        float markPer = (MAX_DEGREE - MIN_DEGREE) / 11f;
-        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += markPer) {
+        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += MARK_DEGREE) {
             canvas.drawPath(markPath, markPaint);
-            canvas.rotate(markPer, centerX, centerY);
+            canvas.rotate(MARK_DEGREE, centerX, centerY);
         }
         canvas.restore();
 
         //small mark
         canvas.save();
         canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
-        float smallMarkPer = (MAX_DEGREE - MIN_DEGREE) / 44f;
-        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += smallMarkPer) {
+        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += SMALL_MARK_DEGREE) {
             canvas.drawPath(smallMarkPath, smallMarkPaint);
-            canvas.rotate(smallMarkPer, centerX, centerY);
+            canvas.rotate(SMALL_MARK_DEGREE, centerX, centerY);
         }
         canvas.restore();
+
     }
 
     @Override
     protected void drawActiveSpeedView(Canvas canvas) {
-        int width = getWidth();
-        int height = getHeight();
-        float centerX = width / 2f;
-        float centerY = height / 2f;
-        float indicatorCircleRadius = width / 55f;
+        float indicatorCircleRadius = mWidth / 45f;
 
         //rotate speed arc
         canvas.drawArc(rotateSpeedRect, 30f, mRotateDegree, false, rotateSpeedPaint);
@@ -329,16 +324,16 @@ public class ThirdSpeedView extends SpeedView {
         //speed text
         String speedText = String.format(Locale.getDefault(), "%.1f",
                 (mDegree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + getUnit();
-        speedBackgroundRect.set(centerX - (speedTextPaint.measureText(speedText) / 2f) - 5,//left
-                insideCircleRect.bottom - speedTextPaint.getTextSize(),//top
-                centerX + (speedTextPaint.measureText(speedText) / 2f) + 5,//right
-                centerY * 1.4f + 4);//bottom
-        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
+//        speedBackgroundRect.set(centerX - (speedTextPaint.measureText(speedText) / 2f) - 5,//left
+//                insideCircleRect.bottom - speedTextPaint.getTextSize(),//top
+//                centerX + (speedTextPaint.measureText(speedText) / 2f) + 5,//right
+//                centerY * 1.4f + 4);//bottom
+//        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
         canvas.drawText(speedText, centerX, centerY * 1.4f, speedTextPaint);
 
         //rotate speed text
         String rotateSpeedText = String.format(Locale.getDefault(), "%d",
-                (int) ((mRotateDegree - MIN_ROTATE_DEGREE) * 5000 / (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE))) + " RPM";
+                (int) ((mRotateDegree - MIN_ROTATE_DEGREE) * mMaxRotateSpeed / (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE))) + " RPM";
         canvas.drawText(rotateSpeedText, centerX, centerY * 1.8f, rotateSpeedTextPaint);
     }
 
@@ -418,14 +413,13 @@ public class ThirdSpeedView extends SpeedView {
     }
 
     public void rotateSpeedTo(int rotateSpeed, long moveDuration) {
-        int maxRotateSpeed = 5000;
         //0~maxRotateSpeed
-        rotateSpeed = (rotateSpeed > maxRotateSpeed) ? maxRotateSpeed : (rotateSpeed < 0) ? 0 : rotateSpeed;
+        rotateSpeed = (rotateSpeed > mMaxRotateSpeed) ? mMaxRotateSpeed : (rotateSpeed < 0) ? 0 : rotateSpeed;
         this.mRotateSpeed = rotateSpeed;
 
         //30~150
         float newDegree = (float) rotateSpeed * (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE) /
-                maxRotateSpeed + MIN_ROTATE_DEGREE;
+                mMaxRotateSpeed + MIN_ROTATE_DEGREE;
 
         if (newDegree == mRotateDegree) return;
 
