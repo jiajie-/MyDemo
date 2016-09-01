@@ -1,7 +1,10 @@
 package com.jiajie.design.widgets.speed;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -10,6 +13,8 @@ import android.view.View;
  * Created by jiajie on 16/8/29.
  */
 abstract public class SpeedView extends View {
+
+    private static final String TAG = "SpeedView";
 
     //速度计
     private float speedometerWidth = dp2px(30f);
@@ -33,6 +38,8 @@ abstract public class SpeedView extends View {
             , textColor = Color.BLACK//文字颜色
             , backgroundCircleColor = Color.TRANSPARENT;//背景圆颜色
 
+    protected Bitmap speedViewBitmap;
+    protected Paint speedViewBitmapPaint;
 
     public SpeedView(Context context) {
         super(context);
@@ -44,11 +51,100 @@ abstract public class SpeedView extends View {
 
     public SpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+        initSpeedViewPaint();
+    }
+
+    public void initSpeedViewPaint() {
+        speedViewBitmapPaint = new Paint();
+        speedViewBitmapPaint.setStrokeJoin(Paint.Join.ROUND); //平滑效果
+        speedViewBitmapPaint.setDither(true); //防抖动
+        speedViewBitmapPaint.setAntiAlias(true);  //消除锯齿
+        speedViewBitmapPaint.setStyle(Paint.Style.STROKE);  //设置样式
+        speedViewBitmapPaint.setFilterBitmap(true);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        //refresh draw parameters
+        refreshDraw();
+        //draw static value
+        if (speedViewBitmap != null) {
+            canvas.drawBitmap(speedViewBitmap, 0, 0, speedViewBitmapPaint);
+        }
+        //draw active value
+        drawActiveSpeedView(canvas);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        int size = (width > height) ? height : width;
+        setMeasuredDimension(size, size);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        //refresh draw parameters
+        refreshDraw();
+        //calculate size change
+        calculateSize(w, h, oldw, oldh);
+        //draw static speed view
+        if (speedViewBitmap != null) {
+            speedViewBitmap.recycle();
+        }
+        speedViewBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(speedViewBitmap);
+        drawStaticSpeedView(canvas);
     }
 
     protected float dp2px(float dp) {
         return dp * getContext().getResources().getDisplayMetrics().density;
     }
+
+    /**
+     * init Paint,TextPaint,Path,RectF etc...
+     */
+    abstract protected void init();
+
+    /**
+     * refresh draw parameters...
+     */
+    abstract protected void refreshDraw();
+
+    /**
+     * <p>calculate view size to correct {@code int},</p>
+     * <p>set Path,Paint,RectF size etc ...</p>
+     *
+     * @param w    width
+     * @param h    height
+     * @param oldw old width
+     * @param oldh old height
+     */
+    abstract protected void calculateSize(int w, int h, int oldw, int oldh);
+
+    /**
+     * draw a static speed view into bitmap,reduce canvas draw work
+     *
+     * @param canvas canvas to draw static speed view
+     */
+    abstract protected void drawStaticSpeedView(Canvas canvas);
+
+    /**
+     * draw a active speed view in {@link View#onDraw(Canvas canvas)
+     *
+     * @param canvas canvas to draw active speed view
+     */
+    abstract protected void drawActiveSpeedView(Canvas canvas);
 
     abstract public void speedToDef();
 
@@ -56,6 +152,7 @@ abstract public class SpeedView extends View {
      * <p>change speed to correct {@code int},</p>
      * <p>if {@code speed > maxSpeed} speed will be maxSpeed,</p>
      * if {@code speed < 0} speed will be 0.
+     *
      * @param speed correct speed to move.
      */
     abstract public void speedTo(int speed);
@@ -64,7 +161,8 @@ abstract public class SpeedView extends View {
      * <p>change speed to correct {@code int},</p>
      * <p>if {@code speed > maxSpeed} speed will be maxSpeed,</p>
      * if {@code speed < 0} speed will be 0.
-     * @param speed correct speed to move.
+     *
+     * @param speed        correct speed to move.
      * @param moveDuration The length of the animation, in milliseconds.
      *                     This value cannot be negative.
      */
@@ -72,12 +170,14 @@ abstract public class SpeedView extends View {
 
     /**
      * change speed to percent value.
+     *
      * @param percent percent value to change, should be between [0,100].
      */
     abstract public void speedPercentTo(int percent);
 
     /**
      * what speed is now
+     *
      * @return the last speed which you set by {@link #speedTo(int)}
      * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)}.
      */
@@ -85,6 +185,7 @@ abstract public class SpeedView extends View {
 
     /**
      * what percent speed is now
+     *
      * @return the last speed which you set by {@link #speedTo(int)}
      * or {@link #speedTo(int, long)} or {@link #speedPercentTo(int)}.
      */
