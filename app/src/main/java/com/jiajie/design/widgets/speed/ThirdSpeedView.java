@@ -10,7 +10,9 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RadialGradient;
 import android.graphics.RectF;
+import android.graphics.Shader;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -38,6 +40,7 @@ public class ThirdSpeedView extends SpeedView {
             markPaint,
             smallMarkPaint,
             insideCirclePaint,
+            radialGradientPaint,
             pointPaint,
             rotateSpeedPaint,
             backgroundCirclePaint,
@@ -52,9 +55,13 @@ public class ThirdSpeedView extends SpeedView {
             rotateSpeedRect,
             speedBackgroundRect;
 
+    private RadialGradient radialGradient;
+
     private int speedBackgroundColor = Color.TRANSPARENT,
             speedTextColor = Color.WHITE,
             rotateTextColor = Color.RED,
+            gradientStartColor = Color.parseColor("#000F4E61"),
+            gradientEndColor = Color.parseColor("#FF08555C"),
             rotateSpeedColor1 = Color.parseColor("#19FFFFFF"),
             rotateSpeedColor2 = Color.parseColor("#FF0000"),
             smallMarkColor1 = Color.parseColor("#80FFFFFF"),
@@ -67,8 +74,7 @@ public class ThirdSpeedView extends SpeedView {
             mWidth,
             mHeight,
             centerX,
-            centerY,
-            indicatorWidth;
+            centerY;
 
     private static final float MIN_DEGREE = 150f,
             MAX_DEGREE = MIN_DEGREE + 240f;
@@ -123,6 +129,7 @@ public class ThirdSpeedView extends SpeedView {
         rotateSpeedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         backgroundCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        radialGradientPaint = new Paint(insideCirclePaint);
 
         //text paints
         speedTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -141,6 +148,7 @@ public class ThirdSpeedView extends SpeedView {
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
         rotateSpeedPaint.setStyle(Paint.Style.STROKE);
+        radialGradientPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         //text align
         speedTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -153,6 +161,8 @@ public class ThirdSpeedView extends SpeedView {
 
         //set point effects,to draw a dash line
         pointPaint.setPathEffect(new DashPathEffect(new float[]{3f, 97f}, 0));
+        //set radial effect
+        radialGradientPaint.setMaskFilter(new BlurMaskFilter(16, BlurMaskFilter.Blur.NORMAL));
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWithEffects(mWithEffects);
@@ -224,20 +234,14 @@ public class ThirdSpeedView extends SpeedView {
         insideCircleRect.set(centerX - mInsideCircleRadius, centerY - mInsideCircleRadius,
                 centerX + mInsideCircleRadius, centerY + mInsideCircleRadius);
 
+        //radialGradient
+        radialGradient = new RadialGradient(centerX, centerY, mInsideCircleRadius, gradientStartColor, gradientEndColor, Shader.TileMode.CLAMP);
+        radialGradientPaint.setShader(radialGradient);
+
         //point path
         RectF pointRect = new RectF(insideCircleRect.left + 20, insideCircleRect.top + 20,
                 insideCircleRect.right - 20, insideCircleRect.bottom - 20);
         pointPath.addArc(pointRect, MIN_DEGREE, MAX_DEGREE - MIN_DEGREE);
-
-        //indicatorPath
-        indicatorWidth = mWidth / 64f;
-        indicatorPath.moveTo(centerX, 0f);
-        indicatorPath.lineTo(centerX - indicatorWidth, mHeight * 0.5f);
-        indicatorPath.lineTo(centerX + indicatorWidth, mHeight * 0.5f);
-        RectF indicatorRectF = new RectF(centerX - indicatorWidth, mHeight * 0.5f - indicatorWidth,
-                centerY + indicatorWidth, mHeight * 0.5f + indicatorWidth);
-        indicatorPath.addArc(indicatorRectF, 0f, 180f);
-        indicatorPath.moveTo(0f, 0f);
 
         //markPath markPaint
         float markHeight = mHeight / 20f;
@@ -253,9 +257,20 @@ public class ThirdSpeedView extends SpeedView {
         smallMarkPath.moveTo(0f, 0f);
         smallMarkPaint.setStrokeWidth(smallMarkHeight / 3f);
 
+        //indicatorPath
+        float indicatorHeight = mHeight / 64f;
+        float indicatorLength = mHeight * 0.5f;
+        indicatorPath.moveTo(centerX, markHeight);//real indicator length = indicatorLength-markHeight
+        indicatorPath.lineTo(centerX - indicatorHeight, indicatorLength);
+        indicatorPath.lineTo(centerX + indicatorHeight, indicatorLength);
+        RectF indicatorRectF = new RectF(centerX - indicatorHeight, indicatorLength - indicatorHeight,
+                centerY + indicatorHeight, indicatorLength + indicatorHeight);
+        indicatorPath.addArc(indicatorRectF, 0f, 180f);
+        indicatorPath.moveTo(0f, 0f);
+
         //rotateSpeedRectF rotateSpeedPaint
         float rotateWidth = mHeight / 65f;
-        rotateSpeedRect.set(mWidth / 40f, mWidth / 40f, mHeight - rotateWidth, mHeight - rotateWidth);
+        rotateSpeedRect.set(mWidth / 40f, mHeight / 40f, mWidth - rotateWidth, mHeight - rotateWidth);
         rotateSpeedPaint.setStrokeWidth(rotateWidth);
     }
 
@@ -269,7 +284,7 @@ public class ThirdSpeedView extends SpeedView {
             canvas.drawCircle(centerX, centerY, backgroundCircleRadius, backgroundCirclePaint);
         }
 
-        //scale
+        //mark text
         int scaleValue = 0;
         for (int i = 0; i < 12; i++) {
             double angle = MARK_DEGREE * i + 60f;
@@ -289,7 +304,7 @@ public class ThirdSpeedView extends SpeedView {
         //points
         canvas.drawPath(pointPath, pointPaint);
 
-        //scale canvas
+        //scale down canvas
         canvas.scale(MARK_SCALE, MARK_SCALE, centerX, centerY);
 
         //mark
@@ -316,13 +331,14 @@ public class ThirdSpeedView extends SpeedView {
     protected void drawActiveSpeedView(Canvas canvas) {
         float indicatorCircleRadius = mWidth / 45f;
 
-        canvas.scale(MARK_SCALE, MARK_SCALE, centerX, centerY);
-        //rotate speed arc
-        canvas.drawArc(rotateSpeedRect, 30f, mRotateDegree, false, rotateSpeedPaint);
+        //radial area
+        if (mDegree - MIN_DEGREE != 0) {
+            canvas.drawArc(insideCircleRect, MIN_DEGREE, mDegree - MIN_DEGREE, true, radialGradientPaint);
+        }
 
         //indicator
         canvas.save();
-        canvas.rotate(90f + mDegree, centerX, centerY);
+        canvas.rotate(mDegree + 90f, centerX, centerY);
         canvas.drawPath(indicatorPath, indicatorPaint);
         canvas.restore();
         //indicator circle
@@ -330,18 +346,23 @@ public class ThirdSpeedView extends SpeedView {
 
         //speed text
         String speedText = String.format(Locale.getDefault(), "%.1f",
-                (mDegree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE)) + getUnit();
+                (mDegree - MIN_DEGREE) * getMaxSpeed() / (MAX_DEGREE - MIN_DEGREE));
 //        speedBackgroundRect.set(centerX - (speedTextPaint.measureText(speedText) / 2f) - 5,//left
 //                insideCircleRect.bottom - speedTextPaint.getTextSize(),//top
 //                centerX + (speedTextPaint.measureText(speedText) / 2f) + 5,//right
 //                centerY * 1.4f + 4);//bottom
 //        canvas.drawRect(speedBackgroundRect, speedBackgroundPaint);
-        canvas.drawText(speedText, centerX, centerY * 1.4f, speedTextPaint);
+        canvas.drawText(speedText, centerX, centerY * 1.2f, speedTextPaint);
+        canvas.drawText(getUnit(), centerX, centerY * 1.3f, speedTextPaint);
 
         //rotate speed text
         String rotateSpeedText = String.format(Locale.getDefault(), "%d",
                 (int) ((mRotateDegree - MIN_ROTATE_DEGREE) * mMaxRotateSpeed / (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE))) + " RPM";
-        canvas.drawText(rotateSpeedText, centerX, centerY * 1.8f, rotateSpeedTextPaint);
+        canvas.drawText(rotateSpeedText, centerX, centerY * 1.7f, rotateSpeedTextPaint);
+
+        canvas.scale(MARK_SCALE, MARK_SCALE, centerX, centerY);
+        //rotate speed arc
+        canvas.drawArc(rotateSpeedRect, 30f, mRotateDegree, false, rotateSpeedPaint);
     }
 
     @Override
