@@ -42,7 +42,8 @@ public class ThirdSpeedView extends SpeedView {
             insideCirclePaint,
             radialGradientPaint,
             pointPaint,
-            rotateSpeedPaint,
+            rotateSpeedActivePaint,
+            rotateSpeedStaticPaint,
             backgroundCirclePaint,
             centerCirclePaint,
             speedBackgroundPaint;
@@ -126,7 +127,8 @@ public class ThirdSpeedView extends SpeedView {
         smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         insideCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        rotateSpeedPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        rotateSpeedActivePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        rotateSpeedStaticPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         backgroundCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         centerCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         radialGradientPaint = new Paint(insideCirclePaint);
@@ -147,7 +149,8 @@ public class ThirdSpeedView extends SpeedView {
         centerCirclePaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
-        rotateSpeedPaint.setStyle(Paint.Style.STROKE);
+        rotateSpeedActivePaint.setStyle(Paint.Style.STROKE);
+        rotateSpeedStaticPaint.setStyle(Paint.Style.STROKE);
         radialGradientPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         //text align
@@ -207,7 +210,8 @@ public class ThirdSpeedView extends SpeedView {
         speedTextPaint.setColor(speedTextColor);
         markTextPaint.setColor(getTextColor());
         rotateSpeedTextPaint.setColor(rotateTextColor);
-        rotateSpeedPaint.setColor(rotateSpeedColor2);//TODO 根据情况
+        rotateSpeedActivePaint.setColor(rotateSpeedColor2);
+        rotateSpeedStaticPaint.setColor(rotateSpeedColor1);
         //style
         insideCirclePaint.setStyle(Paint.Style.STROKE);
         //stroke width
@@ -273,7 +277,8 @@ public class ThirdSpeedView extends SpeedView {
         //rotateSpeedRectF
         float rotateWidth = mHeight / 65f;
         rotateSpeedRect.set(mWidth / 40f, mHeight / 40f, mWidth - smallMarkHeight, mHeight - smallMarkHeight);
-        rotateSpeedPaint.setStrokeWidth(rotateWidth);
+        rotateSpeedActivePaint.setStrokeWidth(rotateWidth);
+        rotateSpeedStaticPaint.setStrokeWidth(rotateWidth);
     }
 
     @Override
@@ -330,6 +335,10 @@ public class ThirdSpeedView extends SpeedView {
         }
         canvas.restore();
 
+        //rotate speed
+        float offset = 2f;
+        canvas.drawArc(rotateSpeedRect, 30f + offset / 2, MAX_ROTATE_DEGREE - offset, false, rotateSpeedStaticPaint);
+
     }
 
     @Override
@@ -367,7 +376,10 @@ public class ThirdSpeedView extends SpeedView {
         //scale down canvas
         canvas.scale(MARK_SCALE, MARK_SCALE, centerX, centerY);
         //rotate speed arc ,make some offset here,to draw normally
-        canvas.drawArc(rotateSpeedRect, 30f + 1f, mRotateDegree - 2f, false, rotateSpeedPaint);
+        float offset = 2f;
+        if (mRotateDegree >= offset) {
+            canvas.drawArc(rotateSpeedRect, 30f + offset / 2, mRotateDegree - offset, false, rotateSpeedActivePaint);
+        }
     }
 
     @Override
