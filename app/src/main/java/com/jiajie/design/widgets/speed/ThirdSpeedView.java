@@ -39,6 +39,7 @@ public class ThirdSpeedView extends SpeedView {
     private Paint indicatorPaint,
             markPaint,
             smallMarkPaint,
+            smallMarkActivePaint,
             insideCirclePaint,
             radialGradientPaint,
             pointPaint,
@@ -125,6 +126,7 @@ public class ThirdSpeedView extends SpeedView {
         indicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         smallMarkPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        smallMarkActivePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         insideCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         rotateSpeedActivePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -149,6 +151,7 @@ public class ThirdSpeedView extends SpeedView {
         centerCirclePaint.setStyle(Paint.Style.STROKE);
         markPaint.setStyle(Paint.Style.STROKE);
         smallMarkPaint.setStyle(Paint.Style.STROKE);
+        smallMarkActivePaint.setStyle(Paint.Style.STROKE);
         rotateSpeedActivePaint.setStyle(Paint.Style.STROKE);
         rotateSpeedStaticPaint.setStyle(Paint.Style.STROKE);
         radialGradientPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -202,6 +205,7 @@ public class ThirdSpeedView extends SpeedView {
         indicatorPaint.setColor(getIndicatorColor());
         markPaint.setColor(getMarkColor());
         smallMarkPaint.setColor(smallMarkColor1);//TODO 根据情况
+        smallMarkActivePaint.setColor(smallMarkColor2);//TODO 根据情况
         insideCirclePaint.setColor(insideCircleColor1);//TODO 根据情况
         pointPaint.setColor(insideCircleColor1);
         backgroundCirclePaint.setColor(getBackgroundCircleColor());
@@ -262,6 +266,7 @@ public class ThirdSpeedView extends SpeedView {
         smallMarkPath.lineTo(centerX, smallMarkHeight * 2);
         smallMarkPath.moveTo(0f, 0f);
         smallMarkPaint.setStrokeWidth(smallMarkWidth);
+        smallMarkActivePaint.setStrokeWidth(smallMarkWidth);
 
         //indicatorPath
         float indicatorHeight = mHeight / 64f;
@@ -326,15 +331,6 @@ public class ThirdSpeedView extends SpeedView {
         }
         canvas.restore();
 
-        //small mark
-        canvas.save();
-        canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
-        for (float i = MIN_DEGREE; i <= MAX_DEGREE; i += SMALL_MARK_DEGREE) {
-            canvas.drawPath(smallMarkPath, smallMarkPaint);
-            canvas.rotate(SMALL_MARK_DEGREE, centerX, centerY);
-        }
-        canvas.restore();
-
         //rotate speed
         float offset = 2f;
         canvas.drawArc(rotateSpeedRect, 30f + offset / 2, MAX_ROTATE_DEGREE - offset, false, rotateSpeedStaticPaint);
@@ -380,6 +376,23 @@ public class ThirdSpeedView extends SpeedView {
         if (mRotateDegree >= offset) {
             canvas.drawArc(rotateSpeedRect, 30f + offset / 2, mRotateDegree - offset, false, rotateSpeedActivePaint);
         }
+
+        //small mark
+        canvas.save();
+        canvas.rotate(MIN_DEGREE + 90f, centerX, centerY);
+        for (int i = 0; i <= 44; i++) {
+            if (i % 4 != 0) {
+                if (mDegree >= MIN_DEGREE + i * SMALL_MARK_DEGREE) {
+                    //when mDegree>=i ,draw active mark
+                    canvas.drawPath(smallMarkPath, smallMarkActivePaint);
+                }
+                //always draw normal mark
+                canvas.drawPath(smallMarkPath, smallMarkPaint);
+            }
+            canvas.rotate(SMALL_MARK_DEGREE, centerX, centerY);
+        }
+        canvas.restore();
+
     }
 
     @Override
