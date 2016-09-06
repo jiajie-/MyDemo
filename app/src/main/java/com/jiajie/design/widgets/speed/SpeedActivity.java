@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.widgets.speed;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,16 +8,14 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.jiajie.design.widgets.speed.ThirdSpeedView;
+import com.jiajie.design.R;
 
 /**
  * for my custom view display
  * Created by jiajie on 16/8/11.
  */
-public class MyViewActivity extends AppCompatActivity {
+public class SpeedActivity extends AppCompatActivity {
 
-    //    FirstSpeedView firstSpeedView;
-//        SecondSpeedView secondSpeedView;
     ThirdSpeedView thirdSpeedView;
     SeekBar seekBar,seekBar2;
     TextView textSpeed,textSpeed2;
@@ -26,10 +24,8 @@ public class MyViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_view);
+        setContentView(R.layout.activity_speed);
 
-//        firstSpeedView = (FirstSpeedView) findViewById(R.id.speed_view);
-//        secondSpeedView = (SecondSpeedView) findViewById(R.id.speed_view);
         thirdSpeedView = (ThirdSpeedView) findViewById(R.id.speed_view);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar2 = (SeekBar) findViewById(R.id.seekBar2);
@@ -42,8 +38,6 @@ public class MyViewActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 textSpeed.setText(String.format("%d", progress));
-//                firstSpeedView.speedTo(seekBar.getProgress());
-//                secondSpeedView.speedTo(seekBar.getProgress());
                 thirdSpeedView.speedTo(seekBar.getProgress());
             }
 
@@ -85,7 +79,6 @@ public class MyViewActivity extends AppCompatActivity {
                 thirdSpeedView.setWithEffects(isChecked);
             }
         });
-
 
     }
 
