@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -16,16 +15,16 @@ import android.view.View;
 public class RadarView extends View {
 
     private static final String TAG = "RadarView";
+    private static final int DEFAULT_SIZE = 300;
 
     private int count = 8;
-    private static final float maxValue = 100;
-    private final float perRadians = (float) (Math.PI * 2 / count);
+    private float maxValue = 10;
+    private float perRadians = (float) (Math.PI * 2 / count);
+    private RadarItem item;
+
     private float radius;
     private int centerX;
     private int centerY;
-
-    private String[] titles = {"幻", "贤", "力", "速", "精", "印", "忍", "体"};
-    private double[] data = {100, 60, 60, 60, 100, 50, 10, 20};
 
     private Paint mainPaint,
             valuePaint,
@@ -44,6 +43,35 @@ public class RadarView extends View {
         init();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        final int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int size = Math.min(chooseDimension(widthMode, widthSize), chooseDimension(heightMode, heightSize));
+        setMeasuredDimension(size, size);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        radius = Math.min(h, w) / 2 * 0.6f;
+        centerX = w / 2;
+        centerY = h / 2;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (item == null) return;
+        drawPolygon(canvas);
+        drawLines(canvas);
+        drawText(canvas);
+        drawRegion(canvas);
+    }
+
     private void init() {
         //mainPaint
         mainPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -60,37 +88,6 @@ public class RadarView extends View {
 
         //valuePaint
         valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-    }
-
-    protected float dp2px(float dp) {
-        return dp * getContext().getResources().getDisplayMetrics().density;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-        int size = Math.min(width, height);
-        setMeasuredDimension(size, size);
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        radius = Math.min(h, w) / 2 * 0.6f;
-        centerX = w / 2;
-        centerY = h / 2;
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        drawPolygon(canvas);
-        drawLines(canvas);
-        drawText(canvas);
-        drawRegion(canvas);
     }
 
     /**
@@ -143,20 +140,17 @@ public class RadarView extends View {
      */
     private void drawText(Canvas canvas) {
         Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-        float fontHeight = fontMetrics.descent - fontMetrics.ascent;//字体的高度
-        Log.i(TAG, "drawText: fontHeight " + fontHeight);
-
         float centerToBaseline = -fontMetrics.top / 2 - fontMetrics.bottom / 2;
-        Log.e(TAG, "drawText: centerToBaseline : " + centerToBaseline);
 
         canvas.save();
         canvas.scale(1.1f, 1.1f, centerX, centerY);
         for (int i = 0; i < count; i++) {
             float currentRadians = perRadians * i;
-            float textWidth = textPaint.measureText(titles[i]);
+            String text = item.getList().get(i).name;
+            float textWidth = textPaint.measureText(text);
             float x = centerX + (float) ((radius + textWidth / 2) * Math.cos(currentRadians));
             float y = centerY + (float) ((radius + textWidth / 2) * Math.sin(currentRadians) + centerToBaseline);
-            canvas.drawText(titles[i], x, y, textPaint);
+            canvas.drawText(text, x, y, textPaint);
         }
         canvas.restore();
     }
@@ -170,7 +164,8 @@ public class RadarView extends View {
         Path path = new Path();
         valuePaint.setAlpha(255);
         for (int i = 0; i < count; i++) {
-            double percent = data[i] / maxValue;
+            int value = item.getList().get(i).value;
+            double percent = value / maxValue;
             float x = (float) (centerX + radius * Math.cos(perRadians * i) * percent);
             float y = (float) (centerY + radius * Math.sin(perRadians * i) * percent);
             if (i == 0) {
@@ -189,5 +184,30 @@ public class RadarView extends View {
         canvas.drawPath(path, valuePaint);
     }
 
+    protected float dp2px(float dp) {
+        return dp * getContext().getResources().getDisplayMetrics().density;
+    }
+
+    private int chooseDimension(final int mode, final int size) {
+        switch (mode) {
+            case MeasureSpec.AT_MOST:
+            case MeasureSpec.EXACTLY:
+                return size;
+            case MeasureSpec.UNSPECIFIED:
+            default:
+                return DEFAULT_SIZE;
+        }
+    }
+
+    public void setRadarItem(RadarItem item) {
+        if (item == null)
+            throw new IllegalArgumentException("RadarItem should not be null!");
+        if (item.getList() == null)
+            throw new IllegalArgumentException("RadarItem list should not be null!");
+        this.item = item;
+        this.count = item.getList().size();
+        this.perRadians = (float) (Math.PI * 2 / this.count);
+        postInvalidate();
+    }
 
 }

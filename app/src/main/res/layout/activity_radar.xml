@@ -4,9 +4,10 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <include
-        layout="@layout/widget_radar"
+    <com.jiajie.design.widgets.radar.RadarView
+        android:id="@+id/radar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
