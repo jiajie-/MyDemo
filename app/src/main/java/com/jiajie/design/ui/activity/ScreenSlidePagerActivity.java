@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.jiajie.design.R;
+import com.jiajie.design.ui.fragment.BezierFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.fragment.ScreenSlidePageFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
@@ -71,6 +72,8 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
                     return new SpeedViewFragment();
                 case FRAGMENT_RADAR:
                     return new RadarFragment();
+                case FRAGMENT_BEZIER:
+                    return new BezierFragment();
                 default:
                     return new ScreenSlidePageFragment();
             }
