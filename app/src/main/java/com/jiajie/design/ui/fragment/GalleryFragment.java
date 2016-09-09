@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jiajie.design.R;
 import com.jiajie.design.api.DataResponse;
 import com.jiajie.design.api.DataResult;
 import com.jiajie.design.api.GankService;

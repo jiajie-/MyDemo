@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 
+import com.jiajie.design.R;
 import com.jiajie.design.api.SearchResult;
 
 import java.util.ArrayList;

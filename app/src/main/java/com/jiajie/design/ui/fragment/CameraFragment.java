@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.jiajie.design.R;
 
 
 /**

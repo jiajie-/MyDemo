@@ -1,10 +1,12 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.fragment;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+
+import com.jiajie.design.ui.fragment.LayoutManagerType;
 
 public class LoadDataScrollController extends RecyclerView.OnScrollListener
         implements SwipeRefreshLayout.OnRefreshListener {

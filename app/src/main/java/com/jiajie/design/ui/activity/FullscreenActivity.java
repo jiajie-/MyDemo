@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.jiajie.design.R;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

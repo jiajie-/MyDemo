@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -23,10 +23,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jiajie.design.R;
 import com.jiajie.design.api.DataResult;
 import com.jiajie.design.api.GankService;
 import com.jiajie.design.api.SearchResponse;
 import com.jiajie.design.api.SearchResult;
+import com.jiajie.design.ui.fragment.CameraFragment;
+import com.jiajie.design.ui.fragment.GalleryFragment;
+import com.jiajie.design.ui.fragment.SearchFragment;
 
 import java.util.List;
 

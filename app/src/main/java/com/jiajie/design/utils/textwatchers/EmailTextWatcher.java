@@ -1,4 +1,4 @@
-package com.jiajie.design.textwatchers;
+package com.jiajie.design.utils.textwatchers;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;

@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -30,8 +30,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jiajie.design.textwatchers.EmailTextWatcher;
-import com.jiajie.design.textwatchers.PasswordTextWatcher;
+import com.jiajie.design.R;
+import com.jiajie.design.utils.textwatchers.EmailTextWatcher;
+import com.jiajie.design.utils.textwatchers.PasswordTextWatcher;
 import com.jiajie.design.utils.Constants;
 import com.jiajie.design.widgets.ClearAutoCompleteTextView;
 import com.jiajie.design.widgets.ClearEditText;

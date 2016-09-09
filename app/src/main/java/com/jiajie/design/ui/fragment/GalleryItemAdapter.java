@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.fragment;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.jiajie.design.GalleryFragment.OnListFragmentInteractionListener;
+import com.jiajie.design.R;
+import com.jiajie.design.ui.fragment.GalleryFragment.OnListFragmentInteractionListener;
 import com.jiajie.design.api.DataResult;
 
 import java.util.List;

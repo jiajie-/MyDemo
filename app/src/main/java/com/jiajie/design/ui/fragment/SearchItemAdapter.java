@@ -1,4 +1,4 @@
-package com.jiajie.design;
+package com.jiajie.design.ui.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,7 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jiajie.design.SearchFragment.SearchInteractionListener;
+import com.jiajie.design.R;
+import com.jiajie.design.ui.fragment.SearchFragment.SearchInteractionListener;
 import com.jiajie.design.api.SearchResult;
 
 import java.util.List;
