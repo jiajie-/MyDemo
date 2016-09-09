@@ -48,6 +48,12 @@ public class CircleToHeart extends View {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setTextSize(60);
 
+        init();
+    }
+
+    private void init() {
+        mCurrent = 0;
+
         //初始化数据点
         mData[0] = 0;
         mData[1] = mCircleRadius;
@@ -85,8 +91,6 @@ public class CircleToHeart extends View {
 
         mControl[14] = mData[0] - mDifference;
         mControl[15] = mData[1];
-
-
     }
 
     @Override
@@ -103,8 +107,8 @@ public class CircleToHeart extends View {
         canvas.translate(mCenterX, mCenterY);//坐标系移动到canvas中央
         canvas.scale(1, -1);//翻转Y轴
 
-        drawCoordinateSystem(canvas);
-        drawAuxiliaryLine(canvas);
+//        drawCoordinateSystem(canvas);
+//        drawAuxiliaryLine(canvas);
         drawBezier(canvas);
 
         mCurrent += mPiece;
@@ -118,6 +122,9 @@ public class CircleToHeart extends View {
             mControl[4] -= 20 / mCount;
             mControl[10] += 20 / mCount;
 
+            postInvalidateDelayed((long) mPiece);
+        } else if (mCurrent == mDuration) {
+            init();
             postInvalidateDelayed((long) mPiece);
         }
     }
