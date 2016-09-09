@@ -3,6 +3,7 @@ package com.jiajie.design.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import java.util.Locale;
  * Created by jiajie on 16/9/9.
  */
 public class SpeedViewFragment extends Fragment {
+
+    private static final String TAG = "SpeedViewFragment";
 
     ThirdSpeedView thirdSpeedView;
     SeekBar seekBar, seekBar2;
@@ -87,6 +90,12 @@ public class SpeedViewFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: " );
     }
 
 }

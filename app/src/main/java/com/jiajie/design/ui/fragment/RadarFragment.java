@@ -52,6 +52,14 @@ public class RadarFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: " );
+    }
+
+
+
     private void getNanuto() {
         list = new Gson().fromJson(json, new TypeToken<List<RadarItem>>() {
         }.getType());
