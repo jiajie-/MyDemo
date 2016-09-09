@@ -8,8 +8,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.jiajie.design.R;
+import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.fragment.ScreenSlidePageFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
 
@@ -18,6 +20,8 @@ import com.jiajie.design.ui.fragment.SpeedViewFragment;
  * Created by jiajie on 16/9/9.
  */
 public class ScreenSlidePagerActivity extends AppCompatActivity {
+
+    private static final String TAG = "ScreenSlidePagerActivity";
 
     private static final int NUM_PAGES = 5;
 
@@ -61,9 +65,12 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+            Log.e(TAG, "getItem: " + position);
             switch (position) {
                 case FRAGMENT_SPEED:
                     return new SpeedViewFragment();
+                case FRAGMENT_RADAR:
+                    return new RadarFragment();
                 default:
                     return new ScreenSlidePageFragment();
             }
