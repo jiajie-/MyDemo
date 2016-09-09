@@ -15,6 +15,7 @@ import com.jiajie.design.ui.fragment.BezierFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.fragment.ScreenSlidePageFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
+import com.jiajie.design.ui.transformer.ZoomOutPageTransformer;
 
 /**
  * ScreenSlidePagerActivity
@@ -22,7 +23,7 @@ import com.jiajie.design.ui.fragment.SpeedViewFragment;
  */
 public class ScreenSlidePagerActivity extends AppCompatActivity {
 
-    private static final String TAG = "ScreenSlidePagerActivity";
+    private static final String TAG = ScreenSlidePagerActivity.class.getSimpleName();
 
     private static final int NUM_PAGES = 5;
 
@@ -31,7 +32,7 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
     private static final int FRAGMENT_BEZIER = 2;
 
 
-    private ViewPager mViewPager;
+    private ViewPager mPager;
 
     private PagerAdapter mPagerAdapter;
 
@@ -40,21 +41,24 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_slide);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mPagerAdapter);
+        mPager.setAdapter(mPagerAdapter);
+
+        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+//        mPager.setPageTransformer(true, new DepthPageTransformer());
 
     }
 
     @Override
     public void onBackPressed() {
-        if (mViewPager.getCurrentItem() == 0) {
+        if (mPager.getCurrentItem() == 0) {
             // If the user is currently looking at the first step, allow the system to handle the
             // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
         } else {
             // Otherwise, select the previous step.
-            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
 
@@ -82,6 +86,12 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return NUM_PAGES;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            Log.i(TAG, "getItemPosition: ");
+            return super.getItemPosition(object);
         }
     }
 
