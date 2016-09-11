@@ -15,6 +15,7 @@ import com.jiajie.design.ui.fragment.BezierFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.fragment.ScreenSlidePageFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
+import com.jiajie.design.ui.fragment.YinYangFragment;
 import com.jiajie.design.ui.transformer.ZoomOutPageTransformer;
 
 /**
@@ -30,7 +31,7 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
     private static final int FRAGMENT_SPEED = 0;
     private static final int FRAGMENT_RADAR = 1;
     private static final int FRAGMENT_BEZIER = 2;
-
+    private static final int FRAGMENT_YINYANG = 3;
 
     private ViewPager mPager;
 
@@ -78,6 +79,8 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
                     return new RadarFragment();
                 case FRAGMENT_BEZIER:
                     return new BezierFragment();
+                case FRAGMENT_YINYANG:
+                    return new YinYangFragment();
                 default:
                     return new ScreenSlidePageFragment();
             }
