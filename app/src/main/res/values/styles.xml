@@ -85,4 +85,9 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="dir_popup_anim">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
 </resources>
