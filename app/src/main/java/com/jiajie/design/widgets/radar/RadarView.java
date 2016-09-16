@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -15,9 +16,11 @@ import android.view.View;
 public class RadarView extends View {
 
     private static final String TAG = "RadarView";
-    private static final int DEFAULT_SIZE = 300;
 
-    private int count = 8;
+    private static final int DEFAULT_SIZE = 300;
+    private static final int DEFAULT_COUNT = 8;
+
+    private int count = DEFAULT_COUNT;
     private float maxValue = 10;
     private float perRadians = (float) (Math.PI * 2 / count);
     private RadarItem item;
@@ -30,6 +33,10 @@ public class RadarView extends View {
             valuePaint,
             textPaint;
 
+    private Path polygonPath,
+            regionPath,
+            linePath;
+
     public RadarView(Context context) {
         this(context, null);
     }
@@ -41,6 +48,21 @@ public class RadarView extends View {
     public RadarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+    }
+
+    public void setRadarItem(RadarItem item) {
+        if (item == null)
+            throw new IllegalArgumentException("RadarItem should not be null!");
+        if (item.getList() == null)
+            throw new IllegalArgumentException("RadarItem list should not be null!");
+        this.item = item;
+        this.count = item.getList().size();
+        this.perRadians = (float) (Math.PI * 2 / this.count);
+        if (Looper.getMainLooper().equals(Looper.myLooper())) {
+            invalidate();
+        } else {
+            postInvalidate();
+        }
     }
 
     @Override
@@ -88,6 +110,11 @@ public class RadarView extends View {
 
         //valuePaint
         valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        //path
+        polygonPath = new Path();
+        regionPath = new Path();
+        linePath = new Path();
     }
 
     /**
@@ -96,23 +123,22 @@ public class RadarView extends View {
      * @param canvas canvas
      */
     private void drawPolygon(Canvas canvas) {
-        Path path = new Path();
         float r = radius / (count - 1); //蜘蛛丝之间的间距
         for (int i = 1; i < count; i++) { //中心点不用绘制
             float currentRadius = r * i; //当前半径
-            path.reset();
+            polygonPath.reset();
             for (int j = 0; j < count; j++) {
                 if (j == 0) {
-                    path.moveTo(centerX + currentRadius, centerY);
+                    polygonPath.moveTo(centerX + currentRadius, centerY);
                 } else {
                     //根据半径，计算出蜘蛛丝上每个点的坐标
                     float x = (float) (centerX + currentRadius * Math.cos(perRadians * j));
                     float y = (float) (centerY + currentRadius * Math.sin(perRadians * j));
-                    path.lineTo(x, y);
+                    polygonPath.lineTo(x, y);
                 }
             }
-            path.close();
-            canvas.drawPath(path, mainPaint);
+            polygonPath.close();
+            canvas.drawPath(polygonPath, mainPaint);
         }
     }
 
@@ -122,14 +148,13 @@ public class RadarView extends View {
      * @param canvas canvas
      */
     private void drawLines(Canvas canvas) {
-        Path path = new Path();
         for (int i = 0; i < count; i++) {
-            path.reset();
-            path.moveTo(centerX, centerY);
+            linePath.reset();
+            linePath.moveTo(centerX, centerY);
             float x = (float) (centerX + radius * Math.cos(perRadians * i));
             float y = (float) (centerY + radius * Math.sin(perRadians * i));
-            path.lineTo(x, y);
-            canvas.drawPath(path, mainPaint);
+            linePath.lineTo(x, y);
+            canvas.drawPath(linePath, mainPaint);
         }
     }
 
@@ -161,7 +186,7 @@ public class RadarView extends View {
      * @param canvas canvas
      */
     private void drawRegion(Canvas canvas) {
-        Path path = new Path();
+        regionPath.reset();
         valuePaint.setAlpha(255);
         for (int i = 0; i < count; i++) {
             int value = item.getList().get(i).value;
@@ -169,19 +194,19 @@ public class RadarView extends View {
             float x = (float) (centerX + radius * Math.cos(perRadians * i) * percent);
             float y = (float) (centerY + radius * Math.sin(perRadians * i) * percent);
             if (i == 0) {
-                path.moveTo(x, centerY);
+                regionPath.moveTo(x, centerY);
             } else {
-                path.lineTo(x, y);
+                regionPath.lineTo(x, y);
             }
             //绘制小圆点
             canvas.drawCircle(x, y, 5, valuePaint);
         }
         valuePaint.setStyle(Paint.Style.STROKE);
-        canvas.drawPath(path, valuePaint);
+        canvas.drawPath(regionPath, valuePaint);
         valuePaint.setAlpha(127);
         //绘制填充区域
         valuePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        canvas.drawPath(path, valuePaint);
+        canvas.drawPath(regionPath, valuePaint);
     }
 
     protected float dp2px(float dp) {
@@ -197,17 +222,6 @@ public class RadarView extends View {
             default:
                 return DEFAULT_SIZE;
         }
-    }
-
-    public void setRadarItem(RadarItem item) {
-        if (item == null)
-            throw new IllegalArgumentException("RadarItem should not be null!");
-        if (item.getList() == null)
-            throw new IllegalArgumentException("RadarItem list should not be null!");
-        this.item = item;
-        this.count = item.getList().size();
-        this.perRadians = (float) (Math.PI * 2 / this.count);
-        postInvalidate();
     }
 
 }

@@ -16,7 +16,6 @@ import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.fragment.ScreenSlidePageFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
 import com.jiajie.design.ui.fragment.YinYangFragment;
-import com.jiajie.design.ui.transformer.ZoomOutPageTransformer;
 
 /**
  * ScreenSlidePagerActivity
@@ -46,7 +45,7 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
 
-        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+//        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 //        mPager.setPageTransformer(true, new DepthPageTransformer());
 
     }

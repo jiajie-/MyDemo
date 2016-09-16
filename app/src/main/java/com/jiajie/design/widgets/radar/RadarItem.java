@@ -47,4 +47,9 @@ public class RadarItem {
     public void setList(List<Value> list) {
         this.list = list;
     }
+
+    class Value {
+        String name;
+        int value;
+    }
 }
