@@ -1,6 +1,7 @@
 package com.jiajie.design.widgets.radar;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +9,8 @@ import android.graphics.Path;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.jiajie.design.R;
 
 /**
  * RadarView
@@ -19,9 +22,12 @@ public class RadarView extends View {
 
     private static final int DEFAULT_SIZE = 300;
     private static final int DEFAULT_COUNT = 8;
+    private static final float DEFAULT_MAX_VALUE = 10f;
 
     private int count = DEFAULT_COUNT;
-    private float maxValue = 10;
+    private float maxValue = DEFAULT_MAX_VALUE;
+    private int textColor = Color.BLACK;
+    private float textSize = 18f;
     private float perRadians = (float) (Math.PI * 2 / count);
     private RadarItem item;
 
@@ -48,6 +54,7 @@ public class RadarView extends View {
     public RadarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+        initAttributeSet(context, attrs);
     }
 
     public void setRadarItem(RadarItem item) {
@@ -103,10 +110,10 @@ public class RadarView extends View {
 
         //textPaint
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        textPaint.setColor(Color.BLUE);
+        textPaint.setColor(textColor);
         textPaint.setStyle(Paint.Style.STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTextSize(dp2px(18f));
+        textPaint.setTextSize(dp2px(textSize));
 
         //valuePaint
         valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -115,6 +122,15 @@ public class RadarView extends View {
         polygonPath = new Path();
         regionPath = new Path();
         linePath = new Path();
+    }
+
+    private void initAttributeSet(Context context, AttributeSet attrs) {
+        if (attrs == null) return;
+        TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RadarView, 0, 0);
+        textColor = a.getColor(R.styleable.RadarView_textColor, textColor);
+        textSize = a.getDimension(R.styleable.RadarView_textSize, textSize);
+        maxValue = a.getFloat(R.styleable.RadarView_maxValue, maxValue);
+        a.recycle();
     }
 
     /**
