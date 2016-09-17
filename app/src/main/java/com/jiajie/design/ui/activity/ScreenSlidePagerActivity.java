@@ -13,9 +13,8 @@ import android.util.Log;
 import com.jiajie.design.R;
 import com.jiajie.design.ui.fragment.BezierFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
-import com.jiajie.design.ui.fragment.ScreenSlidePageFragment;
+import com.jiajie.design.ui.fragment.SelectPhotoFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
-import com.jiajie.design.ui.fragment.YinYangFragment;
 
 /**
  * ScreenSlidePagerActivity
@@ -25,12 +24,13 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
 
     private static final String TAG = ScreenSlidePagerActivity.class.getSimpleName();
 
-    private static final int NUM_PAGES = 5;
+    private static final int NUM_PAGES = 4;
 
-    private static final int FRAGMENT_SPEED = 0;
-    private static final int FRAGMENT_RADAR = 1;
-    private static final int FRAGMENT_BEZIER = 2;
-    private static final int FRAGMENT_YINYANG = 3;
+    private static final int FRAGMENT_SELECT_PHOTO = 0;
+    private static final int FRAGMENT_SPEED = 1;
+    private static final int FRAGMENT_RADAR = 2;
+    private static final int FRAGMENT_BEZIER = 3;
+//    private static final int FRAGMENT_YINYANG = 3;
 
     private ViewPager mPager;
 
@@ -72,17 +72,18 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             Log.e(TAG, "getItem: " + position);
             switch (position) {
+                case FRAGMENT_SELECT_PHOTO:
+                    return new SelectPhotoFragment();
                 case FRAGMENT_SPEED:
                     return new SpeedViewFragment();
                 case FRAGMENT_RADAR:
                     return new RadarFragment();
                 case FRAGMENT_BEZIER:
                     return new BezierFragment();
-                case FRAGMENT_YINYANG:
-                    return new YinYangFragment();
-                default:
-                    return new ScreenSlidePageFragment();
+//                case FRAGMENT_YINYANG:
+//                    return new YinYangFragment();
             }
+            return null;
         }
 
         @Override
@@ -92,7 +93,6 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
 
         @Override
         public int getItemPosition(Object object) {
-            Log.i(TAG, "getItemPosition: ");
             return super.getItemPosition(object);
         }
     }

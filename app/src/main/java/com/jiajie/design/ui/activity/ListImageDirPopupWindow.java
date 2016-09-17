@@ -15,8 +15,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jiajie.design.R;
-import com.jiajie.design.utils.image.ImageLoader;
 
 import java.util.List;
 
@@ -139,7 +139,11 @@ public class ListImageDirPopupWindow extends PopupWindow {
             //reset
 
             holder.mImage.setImageResource(R.drawable.pic_no);
-            ImageLoader.getInstance().loadImage(bean.getFirstImagePath(), holder.mImage);
+
+            Glide.with(convertView.getContext())
+                    .load(bean.getFirstImagePath())
+                    .into(holder.mImage);
+//            ImageLoader.getInstance().loadImage(bean.getFirstImagePath(), holder.mImage);
 
             holder.mDirName.setText(bean.getName());
             holder.mDirCount.setText(String.valueOf(bean.getCount()));

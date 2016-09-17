@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.jiajie.design.R;
-import com.jiajie.design.utils.image.ImageLoader;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,12 +23,12 @@ public class ImageAdapter extends BaseAdapter {
     private String mDirPath;
     private List<String> mImagePaths;
     private LayoutInflater mInflater;
-
+    private OnImageEventListener listener;
 
     public ImageAdapter(Context context, List<String> mDatas, String dirPath) {
         this.mDirPath = dirPath;
         this.mImagePaths = mDatas;
-        this.mInflater = LayoutInflater.from(context);
+        this.mInflater = LayoutInflater.from(context.getApplicationContext());
     }
 
     @Override
@@ -48,8 +48,8 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         final ViewHolder viewHolder;
+
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.item_gridview, parent, false);
             viewHolder = new ViewHolder();
@@ -65,13 +65,14 @@ public class ImageAdapter extends BaseAdapter {
         viewHolder.mImageView.setColorFilter(null);
         viewHolder.mSelect.setImageResource(R.drawable.pic_unselected);
 
-
-        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(mDirPath +
-                "/" + mImagePaths.get(position), viewHolder.mImageView);
-
         final String filePath = mDirPath + "/" + mImagePaths.get(position);
 
-        viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
+        Glide.with(convertView.getContext())
+                .load(filePath)
+                .into(viewHolder.mImageView);
+//        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(filePath, viewHolder.mImageView);
+
+        viewHolder.mSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSelectedImage.contains(filePath)) {
@@ -88,6 +89,15 @@ public class ImageAdapter extends BaseAdapter {
             }
         });
 
+        viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onImageClick(mImagePaths.get(position));
+                }
+            }
+        });
+
         if (mSelectedImage.contains(filePath)) {
             viewHolder.mImageView.setColorFilter(Color.parseColor("#77000000"));
             viewHolder.mSelect.setImageResource(R.drawable.pic_selected);
@@ -99,6 +109,14 @@ public class ImageAdapter extends BaseAdapter {
     private class ViewHolder {
         ImageView mImageView;
         ImageButton mSelect;
+    }
+
+    public interface OnImageEventListener {
+        void onImageClick(String file);
+    }
+
+    public void setOnImageEventListener(OnImageEventListener listener) {
+        this.listener = listener;
     }
 }
 

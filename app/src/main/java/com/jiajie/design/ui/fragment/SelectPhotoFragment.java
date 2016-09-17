@@ -1,7 +1,8 @@
-package com.jiajie.design.ui.activity;
+package com.jiajie.design.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.PopupWindow;
@@ -21,6 +24,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiajie.design.R;
+import com.jiajie.design.preview.PreviewActivity;
+import com.jiajie.design.ui.activity.FolderBean;
+import com.jiajie.design.ui.activity.ImageAdapter;
+import com.jiajie.design.ui.activity.ListImageDirPopupWindow;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -31,12 +38,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * PhotoSelectorActivity
- * Created by jiajie on 16/9/12.
+ * ScreenSlidePageFragment
+ * Created by jiajie on 16/9/9.
  */
-public class PhotoSelectorActivity extends AppCompatActivity {
+public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImageEventListener {
 
-    private static final String TAG = "PhotoSelectorActivity";
+    private static final String TAG = "SelectPhotoFragment";
 
     private static final int DATA_LOADED = 0x110;
 
@@ -70,9 +77,33 @@ public class PhotoSelectorActivity extends AppCompatActivity {
         }
     };
 
-    private void initDirPopupWindow() {
-        mPopupWindow = new ListImageDirPopupWindow(this, mFolderBeans);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup rootView = (ViewGroup) inflater.inflate(
+                R.layout.fragement_select_photo, container, false);
 
+        //views
+        mGridView = (GridView) rootView.findViewById(R.id.grid_view);
+        mBottomLayout = (RelativeLayout) rootView.findViewById(R.id.bottom_layout);
+        mDirName = (TextView) rootView.findViewById(R.id.dir_name);
+        mDirCount = (TextView) rootView.findViewById(R.id.dir_count);
+        initData();
+        //events
+        mBottomLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPopupWindow.setAnimationStyle(R.style.dir_popup_anim);
+                mPopupWindow.showAsDropDown(mBottomLayout, 0, 0);
+                lightOff();
+            }
+        });
+
+        return rootView;
+    }
+
+    private void initDirPopupWindow() {
+        mPopupWindow = new ListImageDirPopupWindow(this.getActivity(), mFolderBeans);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -93,8 +124,9 @@ public class PhotoSelectorActivity extends AppCompatActivity {
                     }
                 }));
 
-                mAdapter = new ImageAdapter(PhotoSelectorActivity.this, mImages,
+                mAdapter = new ImageAdapter(SelectPhotoFragment.this.getActivity(), mImages,
                         mCurrentDir.getAbsolutePath());
+                mAdapter.setOnImageEventListener(SelectPhotoFragment.this);
                 mGridView.setAdapter(mAdapter);
 
                 mDirCount.setText(String.valueOf(mImages.size()));
@@ -103,61 +135,37 @@ public class PhotoSelectorActivity extends AppCompatActivity {
                 mPopupWindow.dismiss();
             }
         });
-
     }
 
     /**
      * 内容区域变亮
      */
     private void lightOn() {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
         lp.alpha = 1.0f;
-        getWindow().setAttributes(lp);
-
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_selector);
-        initView();
-        initData();
-        initEvent();
-    }
-
-    private void initEvent() {
-
-        mBottomLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.setAnimationStyle(R.style.dir_popup_anim);
-                mPopupWindow.showAsDropDown(mBottomLayout, 0, 0);
-                lightOff();
-            }
-        });
-
-
+        getActivity().getWindow().setAttributes(lp);
     }
 
     /**
      * 内容区域变暗
      */
     private void lightOff() {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
         lp.alpha = 0.3f;
-        getWindow().setAttributes(lp);
+        getActivity().getWindow().setAttributes(lp);
     }
 
     protected void dataToView() {
         if (mCurrentDir == null) {
-            Toast.makeText(this, "未扫描到任何图片", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getActivity(), "未扫描到任何图片", Toast.LENGTH_SHORT).show();
             return;
         }
 
         mImages = Arrays.asList(mCurrentDir.list());
 
-        mAdapter = new ImageAdapter(this, mImages, mCurrentDir.getAbsolutePath());
+        mAdapter = new ImageAdapter(this.getActivity(), mImages, mCurrentDir.getAbsolutePath());
         mGridView.setAdapter(mAdapter);
+        mAdapter.setOnImageEventListener(this);
 
         mDirCount.setText(String.valueOf(mMaxCount));
         mDirName.setText(mCurrentDir.getName());
@@ -169,17 +177,18 @@ public class PhotoSelectorActivity extends AppCompatActivity {
      */
     private void initData() {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Toast.makeText(this, "当前存储卡不可用！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.getActivity(), "当前存储卡不可用！", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        mProgressDialog = ProgressDialog.show(this, null, "正在加载...");
+        mProgressDialog = ProgressDialog.show(this.getActivity(), null, "正在加载...");
 
         new Thread() {
             @Override
             public void run() {
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                ContentResolver cr = getContentResolver();
+                ContentResolver cr = SelectPhotoFragment.this.getContext().getApplicationContext()
+                        .getContentResolver();
 
                 Cursor cursor = cr.query(mImageUri, null,
                         MediaStore.Images.Media.MIME_TYPE + " = ? or " +
@@ -212,7 +221,7 @@ public class PhotoSelectorActivity extends AppCompatActivity {
                     if (parentFile == null) continue;
 
                     String dirPath = parentFile.getAbsolutePath();
-                    FolderBean folderBean = null;
+                    FolderBean folderBean;
 
                     if (mDirPaths.contains(dirPath)) {
                         continue;
@@ -241,16 +250,22 @@ public class PhotoSelectorActivity extends AppCompatActivity {
 
             }
         }.start();
-
-
     }
 
-    private void initView() {
-        mGridView = (GridView) findViewById(R.id.grid_view);
-        mBottomLayout = (RelativeLayout) findViewById(R.id.bottom_layout);
-        mDirName = (TextView) findViewById(R.id.dir_name);
-        mDirCount = (TextView) findViewById(R.id.dir_count);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: ");
     }
 
+    @Override
+    public void onImageClick(String file) {
+        Intent intent = new Intent(SelectPhotoFragment.this.getActivity(), PreviewActivity.class);
+        String[] strings = new String[mImages.size()];
+        intent.putExtra("imageList", mImages.toArray(strings));
+        intent.putExtra("index", mImages.indexOf(file));
+        intent.putExtra("path", mCurrentDir.getAbsolutePath());
+        startActivity(intent);
+    }
 
 }

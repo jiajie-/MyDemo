@@ -12,7 +12,6 @@ import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -162,7 +161,6 @@ public class SearchView extends View {
                     case SEARCHING:
                         if (!isOver) { // 如果搜索未结束 则继续执行搜索动画
                             mSearchingAnimator.start();
-                            Log.e(TAG, "RESTART");
                             count++;
                             if (count > 2) { // count大于2则进入结束状态
                                 isOver = true;
@@ -266,7 +264,7 @@ public class SearchView extends View {
 
         searchPath.lineTo(pos[0], pos[1]); // 放大镜把手
 
-        Log.i(TAG, "pos=" + pos[0] + ":" + pos[1]);
+//        Log.i(TAG, "pos=" + pos[0] + ":" + pos[1]);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class RadarFragment extends Fragment {
     String json = "[\n" +
             "{\"id\":1,\"name\":\"nanuto\",\"list\":[{\"name\":\"幻\",\"value\":10},{\"name\":\"贤\",\"value\":10},{\"name\":\"力\",\"value\":10},{\"name\":\"速\",\"value\":10},{\"name\":\"精\",\"value\":10},{\"name\":\"印\",\"value\":10},{\"name\":\"忍\",\"value\":10},{\"name\":\"体\",\"value\":10}]},\n" +
             "{\"id\":2,\"name\":\"tiantian\",\"list\":[{\"name\":\"幻\",\"value\":10},{\"name\":\"贤\",\"value\":10},{\"name\":\"力\",\"value\":10},{\"name\":\"速\",\"value\":10},{\"name\":\"精\",\"value\":10},{\"name\":\"印\",\"value\":10},{\"name\":\"忍\",\"value\":10},{\"name\":\"体\",\"value\":10}]},\n" +
-            "{\"id\":3,\"name\":\"lee\",\"list\":[{\"name\":\"幻\",\"value\":10},{\"name\":\"贤\",\"value\":10},{\"name\":\"力\",\"value\":10},{\"name\":\"速\",\"value\":10},{\"name\":\"精\",\"value\":10},{\"name\":\"印\",\"value\":10},{\"name\":\"忍\",\"value\":10},{\"name\":\"体\",\"value\":10}]},\n" +
+            "{\"id\":3,\"name\":\"lee\",\"list\":[{\"name\":\"幻\",\"value\":5},{\"name\":\"贤\",\"value\":3},{\"name\":\"力\",\"value\":7},{\"name\":\"速\",\"value\":8},{\"name\":\"精\",\"value\":10},{\"name\":\"印\",\"value\":4},{\"name\":\"忍\",\"value\":6},{\"name\":\"体\",\"value\":1}]},\n" +
             "{\"id\":4,\"name\":\"sasikei\",\"list\":[{\"name\":\"幻\",\"value\":10},{\"name\":\"贤\",\"value\":10},{\"name\":\"力\",\"value\":10},{\"name\":\"速\",\"value\":10},{\"name\":\"精\",\"value\":10},{\"name\":\"印\",\"value\":10},{\"name\":\"忍\",\"value\":10},{\"name\":\"体\",\"value\":10}]}\n" +
             "]";
 
