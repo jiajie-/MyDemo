@@ -9,24 +9,33 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 
 /**
  * ZoomImageView 放大后可以自由移动，多指缩放
+ * ScaleGestureDetector 捕获缩放事件
+ * onTouch
+ * onScale
+ * Matrix
+ *
+ * 双击放大、缩小
+ * GestureDetector 捕获双击事件
+ * postDelay + Runnable
+ *
  * Created by jiajie on 16/9/17.
  */
-public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGlobalLayoutListener,
-        ScaleGestureDetector.OnScaleGestureListener, View.OnTouchListener {
+public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
+        OnScaleGestureListener, View.OnTouchListener {
 
     private boolean mOnce = false;
 
     private float mInitScale;
     private float mMidScale;
     private float mMaxScale;
-
     private Matrix mScaleMatrix;
 
     //捕获用户多指触控时缩放的比例

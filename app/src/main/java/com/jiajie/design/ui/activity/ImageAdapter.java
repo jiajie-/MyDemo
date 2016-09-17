@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class ImageAdapter extends BaseAdapter {
 
-    private static Set<String> mSeletedImage = new HashSet<>();
+    private static Set<String> mSelectedImage = new HashSet<>();
 
     private String mDirPath;
     private List<String> mImagePaths;
@@ -74,21 +74,21 @@ public class ImageAdapter extends BaseAdapter {
         viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSeletedImage.contains(filePath)) {
+                if (mSelectedImage.contains(filePath)) {
                     //已经被选择
-                    mSeletedImage.remove(filePath);
+                    mSelectedImage.remove(filePath);
                     viewHolder.mImageView.setColorFilter(null);
                     viewHolder.mSelect.setImageResource(R.drawable.pic_unselected);
                 } else {
                     //未被选择
-                    mSeletedImage.add(filePath);
+                    mSelectedImage.add(filePath);
                     viewHolder.mImageView.setColorFilter(Color.parseColor("#77000000"));
                     viewHolder.mSelect.setImageResource(R.drawable.pic_selected);
                 }
             }
         });
 
-        if (mSeletedImage.contains(filePath)) {
+        if (mSelectedImage.contains(filePath)) {
             viewHolder.mImageView.setColorFilter(Color.parseColor("#77000000"));
             viewHolder.mSelect.setImageResource(R.drawable.pic_selected);
         }
