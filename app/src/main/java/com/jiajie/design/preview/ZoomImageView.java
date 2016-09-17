@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -152,8 +153,26 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
 
         mLastPointerCount = pointerCount;
 
+        RectF rectF = getMatrixRectF();
+
         switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN:
+                //如果图片被放大了，就不让 父布局 拦截事件
+                if (rectF.width() > getWidth() + 0.01f || rectF.height() > getHeight() + 0.01f) {
+                    if (getParent() instanceof ViewPager) {
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+                break;
+
             case MotionEvent.ACTION_MOVE:
+                if (rectF.width() > getWidth() + 0.01f || rectF.height() > getHeight() + 0.01f) {
+                    if (getParent() instanceof ViewPager) {
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                    }
+                }
+
                 float dx = x - mLastX;
                 float dy = y - mLastY;
 
@@ -162,7 +181,6 @@ public class ZoomImageView extends ImageView implements ViewTreeObserver.OnGloba
                 }
 
                 if (isCanDrag) {
-                    RectF rectF = getMatrixRectF();
                     if (getDrawable() != null) {
                         isCheckLeftAndRight = isCheckTopAndBottom = true;
                         //如果宽小于控件宽，不允许横向移动

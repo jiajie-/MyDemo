@@ -4,11 +4,16 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <com.jiajie.design.preview.ZoomImageView
-        android:id="@+id/zoom_image"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="matrix"
-        android:src="@drawable/nav_bar_background"/>
+        android:layout_height="match_parent"/>
+
+    <!--<com.jiajie.design.preview.ZoomImageView-->
+    <!--android:id="@+id/zoom_image"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:scaleType="matrix"-->
+    <!--android:src="@drawable/nav_bar_background"/>-->
 
 </LinearLayout>
