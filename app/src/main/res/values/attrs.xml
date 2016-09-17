@@ -84,9 +84,9 @@
     </declare-styleable>
 
     <declare-styleable name="RadarView">
-        <attr name="textColor" format="color"/>
-        <attr name="textSize" format="dimension"/>
-        <attr name="maxValue" format="float"/>
+        <attr name="radarTextColor" format="color"/>
+        <attr name="radarTextSize" format="dimension"/>
+        <attr name="radarMaxValue" format="float"/>
     </declare-styleable>
 
 </resources>

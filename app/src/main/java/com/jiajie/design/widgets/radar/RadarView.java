@@ -127,9 +127,9 @@ public class RadarView extends View {
     private void initAttributeSet(Context context, AttributeSet attrs) {
         if (attrs == null) return;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.RadarView, 0, 0);
-        textColor = a.getColor(R.styleable.RadarView_textColor, textColor);
-        textSize = a.getDimension(R.styleable.RadarView_textSize, textSize);
-        maxValue = a.getFloat(R.styleable.RadarView_maxValue, maxValue);
+        textColor = a.getColor(R.styleable.RadarView_radarTextColor, textColor);
+        textSize = a.getDimension(R.styleable.RadarView_radarTextSize, textSize);
+        maxValue = a.getFloat(R.styleable.RadarView_radarMaxValue, maxValue);
         a.recycle();
     }
 
