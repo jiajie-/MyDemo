@@ -161,7 +161,14 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
             return;
         }
 
-        mImages = Arrays.asList(mCurrentDir.list());
+        mImages = Arrays.asList(mCurrentDir.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                return (filename.endsWith(".jpg") ||
+                        filename.endsWith(".jpeg") ||
+                        filename.endsWith(".png"));
+            }
+        }));
 
         mAdapter = new ImageAdapter(this.getActivity(), mImages, mCurrentDir.getAbsolutePath());
         mGridView.setAdapter(mAdapter);
