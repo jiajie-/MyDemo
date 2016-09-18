@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.R;
 
 /**
@@ -43,6 +44,7 @@ public class PreviewActivity extends AppCompatActivity {
                 Log.e(TAG, "instantiateItem: " + p);
                 Glide.with(container.getContext())
                         .load(p)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageView);
                 container.addView(imageView);
                 mImageViews[position] = imageView;

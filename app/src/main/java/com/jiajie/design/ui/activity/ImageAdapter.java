@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.R;
 
 import java.util.HashSet;
@@ -69,6 +70,8 @@ public class ImageAdapter extends BaseAdapter {
 
         Glide.with(convertView.getContext())
                 .load(filePath)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
                 .into(viewHolder.mImageView);
 //        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(filePath, viewHolder.mImageView);
 

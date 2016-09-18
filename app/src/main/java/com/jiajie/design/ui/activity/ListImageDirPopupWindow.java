@@ -16,6 +16,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.R;
 
 import java.util.List;
@@ -142,6 +143,8 @@ public class ListImageDirPopupWindow extends PopupWindow {
 
             Glide.with(convertView.getContext())
                     .load(bean.getFirstImagePath())
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
                     .into(holder.mImage);
 //            ImageLoader.getInstance().loadImage(bean.getFirstImagePath(), holder.mImage);
 
