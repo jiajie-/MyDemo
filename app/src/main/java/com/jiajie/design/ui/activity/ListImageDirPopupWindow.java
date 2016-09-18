@@ -144,7 +144,6 @@ public class ListImageDirPopupWindow extends PopupWindow {
             Glide.with(convertView.getContext())
                     .load(bean.getFirstImagePath())
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
                     .into(holder.mImage);
 //            ImageLoader.getInstance().loadImage(bean.getFirstImagePath(), holder.mImage);
 
