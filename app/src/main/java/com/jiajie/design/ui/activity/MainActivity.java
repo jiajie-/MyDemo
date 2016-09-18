@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onListFragmentInteraction(DataResult item) {
+    public void onListFragmentInteraction(List<DataResult> list, DataResult item) {
         Log.d(TAG, "onListFragmentInteraction: " + item);
 
         Intent intent = new Intent(this, FullscreenActivity.class);

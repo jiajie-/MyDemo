@@ -1,5 +1,6 @@
 package com.jiajie.design.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,26 +12,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.jiajie.design.R;
+import com.jiajie.design.api.DataResult;
+import com.jiajie.design.preview.PreviewActivity2;
 import com.jiajie.design.ui.fragment.BezierFragment;
+import com.jiajie.design.ui.fragment.GalleryFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.fragment.SelectPhotoFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
+
+import java.util.List;
 
 /**
  * ScreenSlidePagerActivity
  * Created by jiajie on 16/9/9.
  */
-public class ScreenSlidePagerActivity extends AppCompatActivity {
+public class ScreenSlidePagerActivity extends AppCompatActivity implements GalleryFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = ScreenSlidePagerActivity.class.getSimpleName();
 
     private static final int NUM_PAGES = 4;
 
     private static final int FRAGMENT_SELECT_PHOTO = 0;
-    private static final int FRAGMENT_SPEED = 1;
-    private static final int FRAGMENT_RADAR = 2;
-    private static final int FRAGMENT_BEZIER = 3;
-//    private static final int FRAGMENT_YINYANG = 3;
+    private static final int FRAGMENT_GALLERY = 1;
+    private static final int FRAGMENT_SPEED = 2;
+    private static final int FRAGMENT_RADAR = 3;
+    private static final int FRAGMENT_BEZIER = 4;
 
     private ViewPager mPager;
 
@@ -62,6 +68,21 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onListFragmentInteraction(List<DataResult> list, DataResult item) {
+        int index = list.indexOf(item);
+        int size = list.size();
+
+        String[] urls = new String[list.size()];
+        Intent intent = new Intent(this, PreviewActivity2.class);
+        for (int i = 0; i < size; i++) {
+            urls[i] = list.get(i).getUrl();
+        }
+        intent.putExtra("urls", urls);
+        intent.putExtra("index", index);
+        startActivity(intent);
+    }
+
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         public ScreenSlidePagerAdapter(FragmentManager fm) {
@@ -74,14 +95,15 @@ public class ScreenSlidePagerActivity extends AppCompatActivity {
             switch (position) {
                 case FRAGMENT_SELECT_PHOTO:
                     return new SelectPhotoFragment();
+                case FRAGMENT_GALLERY:
+                    return new GalleryFragment();
                 case FRAGMENT_SPEED:
                     return new SpeedViewFragment();
                 case FRAGMENT_RADAR:
                     return new RadarFragment();
                 case FRAGMENT_BEZIER:
                     return new BezierFragment();
-//                case FRAGMENT_YINYANG:
-//                    return new YinYangFragment();
+
             }
             return null;
         }

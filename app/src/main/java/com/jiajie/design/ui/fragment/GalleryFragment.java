@@ -183,7 +183,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
                                     , Retrofit retrofit) {
                                 if (response.body() != null) {
                                     DataResponse<DataResult> gank = response.body();
-//                                    Log.d(TAG, gank.toString());
+                                    Log.d(TAG, gank.toString());
                                     List<DataResult> results = gank.getResults();
                                     for (DataResult result : results) {
                                         Log.i(TAG, result.toString());
@@ -233,6 +233,6 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DataResult item);
+        void onListFragmentInteraction(List<DataResult> list,DataResult item);
     }
 }

@@ -32,9 +32,8 @@
                 android:resource="@xml/searchable"/>
         </activity>
 
-        <activity android:name=".preview.PreviewActivity"
-
-            />
+        <activity android:name=".preview.PreviewActivity"/>
+        <activity android:name=".preview.PreviewActivity2"/>
 
         <activity
             android:name=".ui.activity.FullscreenActivity"
