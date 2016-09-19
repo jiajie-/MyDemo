@@ -51,6 +51,9 @@
                 android:value=".notification.NotificationActivity"/>
         </activity>
 
+        <meta-data
+            android:name="com.jiajie.design.utils.glide.MyGlideModule"
+            android:value="GlideModule"/>
 
     </application>
 
