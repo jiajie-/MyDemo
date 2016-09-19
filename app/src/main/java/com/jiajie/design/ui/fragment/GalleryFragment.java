@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import com.jiajie.design.R;
 import com.jiajie.design.api.DataResponse;
 import com.jiajie.design.api.DataResult;
 import com.jiajie.design.api.GankService;
-import com.jiajie.design.widgets.DeleteRecyclerView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -36,8 +36,6 @@ import retrofit.Retrofit;
 public class GalleryFragment extends Fragment implements LoadDataScrollController.OnRecycleRefreshListener {
 
     private static final String TAG = GalleryFragment.class.getSimpleName();
-//    private static final String ARG_COLUMN_COUNT = "column-count";
-//    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private SwipeRefreshLayout mRefreshLayout;
     private static final int MSG_REFRESH = 1;
@@ -74,9 +72,6 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
                 case MSG_LOAD_MORE:
                     gallery.currentPage++;
                     gallery.loadData();
-
-//                    gallery.mController.setLoadDataStatus(false);
-
 
                     break;
                 default:
@@ -124,7 +119,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
         Context context = view.getContext();
         handler = new MyHandler(this);
 
-        DeleteRecyclerView recyclerView = (DeleteRecyclerView) view.findViewById(R.id.list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mController = new LoadDataScrollController(this);
         recyclerView.addOnScrollListener(mController);
@@ -133,13 +128,6 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
         adapter = new GalleryItemAdapter(getContext(), mImages, mListener);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-//        if (mColumnCount <= 1) {
-//        } else {
-//            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-//        }
-        // Set the adapter
-
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -168,6 +156,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
         super.onActivityCreated(savedInstanceState);
         Log.e(TAG, "onActivityCreated: ");
         //set loading
+        mRefreshLayout.setRefreshing(true);
         //start load images
         loadData();
     }
@@ -188,10 +177,10 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
                                     for (DataResult result : results) {
                                         Log.i(TAG, result.toString());
                                         mImages.add(result);
-                                        adapter.notifyDataSetChanged();
+                                        adapter.notifyItemInserted(mImages.indexOf(result));
                                         //set to recycler view
                                     }
-
+                                    mRefreshLayout.setRefreshing(false);
                                 } else {
                                     Log.d(TAG, "onResponse: response.body()==null");
                                 }
@@ -233,6 +222,6 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(List<DataResult> list,DataResult item);
+        void onListFragmentInteraction(List<DataResult> list, DataResult item);
     }
 }

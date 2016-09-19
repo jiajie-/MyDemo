@@ -30,14 +30,6 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
 
     private static final String TAG = ScreenSlidePagerActivity.class.getSimpleName();
 
-    private static final int NUM_PAGES = 4;
-
-    private static final int FRAGMENT_SELECT_PHOTO = 0;
-    private static final int FRAGMENT_GALLERY = 1;
-    private static final int FRAGMENT_SPEED = 2;
-    private static final int FRAGMENT_RADAR = 3;
-    private static final int FRAGMENT_BEZIER = 4;
-
     private ViewPager mPager;
 
     private PagerAdapter mPagerAdapter;
@@ -84,6 +76,14 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
     }
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+
+        private static final int NUM_PAGES = 5;
+
+        private static final int FRAGMENT_SELECT_PHOTO = 0;
+        private static final int FRAGMENT_GALLERY = 1;
+        private static final int FRAGMENT_SPEED = 2;
+        private static final int FRAGMENT_RADAR = 3;
+        private static final int FRAGMENT_BEZIER = 4;
 
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
