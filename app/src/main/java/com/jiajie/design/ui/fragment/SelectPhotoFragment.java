@@ -124,7 +124,7 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
                     }
                 }));
 
-                mAdapter = new ImageAdapter(SelectPhotoFragment.this.getActivity(), mImages,
+                mAdapter = new ImageAdapter(SelectPhotoFragment.this.getActivity().getApplicationContext(), mImages,
                         mCurrentDir.getAbsolutePath());
                 mAdapter.setOnImageEventListener(SelectPhotoFragment.this);
                 mGridView.setAdapter(mAdapter);
@@ -170,7 +170,7 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
             }
         }));
 
-        mAdapter = new ImageAdapter(this.getActivity(), mImages, mCurrentDir.getAbsolutePath());
+        mAdapter = new ImageAdapter(this.getActivity().getApplicationContext(), mImages, mCurrentDir.getAbsolutePath());
         mGridView.setAdapter(mAdapter);
         mAdapter.setOnImageEventListener(this);
 

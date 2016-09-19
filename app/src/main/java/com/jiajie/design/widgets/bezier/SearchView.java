@@ -186,14 +186,6 @@ public class SearchView extends View {
         mStartingAnimator = ValueAnimator.ofFloat(0, 1).setDuration(defaultDuration);
         mSearchingAnimator = ValueAnimator.ofFloat(0, 1).setDuration(defaultDuration);
         mEndingAnimator = ValueAnimator.ofFloat(1, 0).setDuration(defaultDuration);
-
-        mStartingAnimator.addUpdateListener(mUpdateListener);
-        mSearchingAnimator.addUpdateListener(mUpdateListener);
-        mEndingAnimator.addUpdateListener(mUpdateListener);
-
-        mStartingAnimator.addListener(mAnimatorListener);
-        mSearchingAnimator.addListener(mAnimatorListener);
-        mEndingAnimator.addListener(mAnimatorListener);
     }
 
     @Override
@@ -265,7 +257,6 @@ public class SearchView extends View {
 
         searchPath.lineTo(pos[0], pos[1]); // 放大镜把手
 
-//        Log.i(TAG, "pos=" + pos[0] + ":" + pos[1]);
     }
 
     @Override
@@ -276,12 +267,33 @@ public class SearchView extends View {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        Log.e(TAG, "onAttachedToWindow: ");
+
+        mStartingAnimator.addUpdateListener(mUpdateListener);
+        mSearchingAnimator.addUpdateListener(mUpdateListener);
+        mEndingAnimator.addUpdateListener(mUpdateListener);
+
+        mStartingAnimator.addListener(mAnimatorListener);
+        mSearchingAnimator.addListener(mAnimatorListener);
+        mEndingAnimator.addListener(mAnimatorListener);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.e(TAG, "onDetachedFromWindow: ");
+
+        if (mStartingAnimator != null) {
+            mStartingAnimator.removeAllUpdateListeners();
+            mStartingAnimator.removeAllListeners();
+        }
+
+        if (mSearchingAnimator != null) {
+            mSearchingAnimator.removeAllUpdateListeners();
+            mSearchingAnimator.removeAllListeners();
+        }
+
+        if (mEndingAnimator != null) {
+            mEndingAnimator.removeAllUpdateListeners();
+            mEndingAnimator.removeAllListeners();
+        }
     }
 }

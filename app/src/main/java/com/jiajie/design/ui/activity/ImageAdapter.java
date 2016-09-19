@@ -92,14 +92,14 @@ public class ImageAdapter extends BaseAdapter {
             }
         });
 
-        viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
+        if (listener != null) {
+            viewHolder.mImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     listener.onImageClick(mImagePaths.get(position));
                 }
-            }
-        });
+            });
+        }
 
         if (mSelectedImage.contains(filePath)) {
             viewHolder.mImageView.setColorFilter(Color.parseColor("#77000000"));
