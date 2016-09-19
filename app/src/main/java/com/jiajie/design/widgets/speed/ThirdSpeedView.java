@@ -13,6 +13,7 @@ import android.graphics.Path;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.os.Looper;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -428,6 +429,20 @@ public class ThirdSpeedView extends SpeedView {
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.e(TAG, "onDetachedFromWindow: remove all listener");
+        speedAnimator.removeAllUpdateListeners();
+        speedAnimator.removeAllListeners();
+
+        rotateSpeedAnimator.removeAllUpdateListeners();
+        rotateSpeedAnimator.removeAllListeners();
+
+        trembleAnimator.removeAllUpdateListeners();
+        trembleAnimator.removeAllListeners();
+    }
+
+    @Override
     public void setWithTremble(boolean withTremble) {
         super.setWithTremble(withTremble);
         tremble();
@@ -504,7 +519,7 @@ public class ThirdSpeedView extends SpeedView {
             speedBackgroundPaint.setMaskFilter(null);
             centerCirclePaint.setMaskFilter(null);
         }
-        invalidate();
+        refresh();
     }
 
     //颤抖动画
@@ -529,7 +544,7 @@ public class ThirdSpeedView extends SpeedView {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             mRotateDegree = (float) rotateSpeedAnimator.getAnimatedValue();
-            postInvalidate();
+            refresh();
         }
     };
 
@@ -537,7 +552,7 @@ public class ThirdSpeedView extends SpeedView {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             mDegree = (float) speedAnimator.getAnimatedValue();
-            postInvalidate();
+            refresh();
         }
     };
 
@@ -545,7 +560,7 @@ public class ThirdSpeedView extends SpeedView {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             mDegree = (float) trembleAnimator.getAnimatedValue();
-            postInvalidate();
+            refresh();
         }
     };
 
@@ -567,5 +582,13 @@ public class ThirdSpeedView extends SpeedView {
         public void onAnimationRepeat(Animator animation) {
         }
     };
+
+    public void refresh() {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            invalidate();
+        } else {
+            postInvalidate();
+        }
+    }
 
 }

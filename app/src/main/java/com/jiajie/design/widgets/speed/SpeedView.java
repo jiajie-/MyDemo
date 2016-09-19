@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -44,12 +45,12 @@ abstract public class SpeedView extends View {
 
     //一般在直接New一个View的时候调用。
     public SpeedView(Context context) {
-        super(context);
+        this(context, null);
     }
 
     //一般在layout文件中使用的时候会调用，关于它的所有属性(包括自定义属性)都会包含在attrs中传递进来。
     public SpeedView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public SpeedView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -130,6 +131,18 @@ abstract public class SpeedView extends View {
         speedViewBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(speedViewBitmap);
         drawStaticSpeedView(canvas);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.e(TAG, "onAttachedToWindow: ");
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.e(TAG, "onDetachedFromWindow: ");
     }
 
     protected float dp2px(float dp) {
