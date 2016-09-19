@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -131,18 +130,6 @@ abstract public class SpeedView extends View {
         speedViewBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(speedViewBitmap);
         drawStaticSpeedView(canvas);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Log.e(TAG, "onAttachedToWindow: ");
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Log.e(TAG, "onDetachedFromWindow: ");
     }
 
     protected float dp2px(float dp) {

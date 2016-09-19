@@ -431,15 +431,20 @@ public class ThirdSpeedView extends SpeedView {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.e(TAG, "onDetachedFromWindow: remove all listener");
-        speedAnimator.removeAllUpdateListeners();
-        speedAnimator.removeAllListeners();
+        if (speedAnimator != null) {
+            speedAnimator.removeAllUpdateListeners();
+            speedAnimator.removeAllListeners();
+        }
 
-        rotateSpeedAnimator.removeAllUpdateListeners();
-        rotateSpeedAnimator.removeAllListeners();
+        if (rotateSpeedAnimator != null) {
+            rotateSpeedAnimator.removeAllUpdateListeners();
+            rotateSpeedAnimator.removeAllListeners();
+        }
 
-        trembleAnimator.removeAllUpdateListeners();
-        trembleAnimator.removeAllListeners();
+        if (trembleAnimator != null) {
+            trembleAnimator.removeAllUpdateListeners();
+            trembleAnimator.removeAllListeners();
+        }
     }
 
     @Override
@@ -583,6 +588,9 @@ public class ThirdSpeedView extends SpeedView {
         }
     };
 
+    /**
+     * 根据所在线程刷新UI
+     */
     public void refresh() {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             invalidate();
