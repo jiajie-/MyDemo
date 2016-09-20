@@ -39,11 +39,7 @@ public class ListImageDirPopupWindow extends PopupWindow {
         void onSelected(FolderBean folderBean);
     }
 
-    OnDirSelectedListener mListener;
-
-    public OnDirSelectedListener getOnDirSelectedListener() {
-        return mListener;
-    }
+    private OnDirSelectedListener mListener;
 
     public void setOnDirSelectedListener(OnDirSelectedListener mListener) {
         this.mListener = mListener;
@@ -111,8 +107,6 @@ public class ListImageDirPopupWindow extends PopupWindow {
 
         private LayoutInflater mInflater;
 
-        private List<FolderBean> mDatas;
-
         public ListDirAdapter(Context context, List<FolderBean> objects) {
             super(context, 0, objects);
             mInflater = LayoutInflater.from(context);
@@ -148,7 +142,7 @@ public class ListImageDirPopupWindow extends PopupWindow {
 //            ImageLoader.getInstance().loadImage(bean.getFirstImagePath(), holder.mImage);
 
             holder.mDirName.setText(bean.getName());
-            holder.mDirCount.setText(String.valueOf(bean.getCount()));
+            holder.mDirCount.setText(String.valueOf(bean.getCount())+"张");
 
             return convertView;
         }

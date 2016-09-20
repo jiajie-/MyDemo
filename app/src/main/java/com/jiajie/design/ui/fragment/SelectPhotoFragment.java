@@ -69,8 +69,7 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
         public void handleMessage(Message msg) {
             if (msg.what == DATA_LOADED) {
                 mProgressDialog.dismiss();
-                //绑定数据到View
-                dataToView();
+                refreshView();
 
                 initDirPopupWindow();
             }
@@ -103,7 +102,7 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
     }
 
     private void initDirPopupWindow() {
-        mPopupWindow = new ListImageDirPopupWindow(this.getActivity(), mFolderBeans);
+        mPopupWindow = new ListImageDirPopupWindow(getActivity().getApplicationContext(), mFolderBeans);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -114,17 +113,16 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
         mPopupWindow.setOnDirSelectedListener(new ListImageDirPopupWindow.OnDirSelectedListener() {
             @Override
             public void onSelected(FolderBean folderBean) {
-                mCurrentDir = new File(folderBean.getDir());
-                mImages = Arrays.asList(mCurrentDir.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String filename) {
-                        return (filename.endsWith(".jpg") ||
-                                filename.endsWith(".jpeg") ||
-                                filename.endsWith(".png"));
-                    }
-                }));
+                if ((mCurrentDir.getPath()).equals(folderBean.getDir())) {
+                    mPopupWindow.dismiss();
+                    return;
+                }
 
-                mAdapter = new ImageAdapter(SelectPhotoFragment.this.getActivity().getApplicationContext(), mImages,
+                mCurrentDir = new File(folderBean.getDir());
+
+                mImages = Arrays.asList(mCurrentDir.list(filter));
+
+                mAdapter = new ImageAdapter(SelectPhotoFragment.this.getActivity(), mImages,
                         mCurrentDir.getAbsolutePath());
                 mAdapter.setOnImageEventListener(SelectPhotoFragment.this);
                 mGridView.setAdapter(mAdapter);
@@ -135,6 +133,23 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
                 mPopupWindow.dismiss();
             }
         });
+    }
+
+    protected void refreshView() {
+        if (mCurrentDir == null) {
+            Toast.makeText(this.getActivity(), "未扫描到任何图片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mImages = Arrays.asList(mCurrentDir.list(filter));
+
+        mAdapter = new ImageAdapter(this.getActivity(), mImages, mCurrentDir.getAbsolutePath());
+        mAdapter.setOnImageEventListener(this);
+        mGridView.setAdapter(mAdapter);
+
+        mDirCount.setText(String.valueOf(mMaxCount));
+        mDirName.setText(mCurrentDir.getName());
+
     }
 
     /**
@@ -155,29 +170,14 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
         getActivity().getWindow().setAttributes(lp);
     }
 
-    protected void dataToView() {
-        if (mCurrentDir == null) {
-            Toast.makeText(this.getActivity(), "未扫描到任何图片", Toast.LENGTH_SHORT).show();
-            return;
+    private FilenameFilter filter = new FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String filename) {
+            return (filename.endsWith(".jpg") ||
+                    filename.endsWith(".jpeg") ||
+                    filename.endsWith(".png"));
         }
-
-        mImages = Arrays.asList(mCurrentDir.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                return (filename.endsWith(".jpg") ||
-                        filename.endsWith(".jpeg") ||
-                        filename.endsWith(".png"));
-            }
-        }));
-
-        mAdapter = new ImageAdapter(this.getActivity().getApplicationContext(), mImages, mCurrentDir.getAbsolutePath());
-        mGridView.setAdapter(mAdapter);
-        mAdapter.setOnImageEventListener(this);
-
-        mDirCount.setText(String.valueOf(mMaxCount));
-        mDirName.setText(mCurrentDir.getName());
-
-    }
+    };
 
     /**
      * 利用ContentProvider扫描手机图片
@@ -241,13 +241,13 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
 
                     if (parentFile.list() == null) continue;
 
-                    int picSize = parentFile.list(filter).length;
+                    int piCount = parentFile.list(filter).length;
 
-                    folderBean.setCount(picSize);
+                    folderBean.setCount(piCount);
                     mFolderBeans.add(folderBean);
 
-                    if (picSize > mMaxCount) {
-                        mMaxCount = picSize;
+                    if (piCount > mMaxCount) {
+                        mMaxCount = piCount;
                         mCurrentDir = parentFile;
                     }
                 }
