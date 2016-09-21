@@ -168,18 +168,8 @@ public class ThirdSpeedView extends SpeedView {
 
         //animator
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
-//        speedAnimator.setInterpolator(interpolator);
-//        speedAnimator.addUpdateListener(speedListener);
-//        speedAnimator.addListener(animatorListener);
-
         rotateSpeedAnimator = ValueAnimator.ofFloat(0f, 1f);
-//        rotateSpeedAnimator.setInterpolator(interpolator);
-//        rotateSpeedAnimator.addUpdateListener(rotateListener);
-
         trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
-//        trembleAnimator.setInterpolator(interpolator);
-//        trembleAnimator.addUpdateListener(trembleListener);
-//        trembleAnimator.addListener(animatorListener);
 
         //set point effects,to draw a dash line
         pointPaint.setPathEffect(new DashPathEffect(new float[]{3f, 97f}, 0));
@@ -440,12 +430,12 @@ public class ThirdSpeedView extends SpeedView {
         //取消上次动画效果
         cancel();
 
-        Log.e(TAG, "speedTo: speedAnimator == null ? " + (speedAnimator == null));
-//        speedAnimator = ValueAnimator.ofFloat(mDegree, newDegree);
-        speedAnimator.setFloatValues(mDegree, newDegree);
+        speedAnimator = ValueAnimator.ofFloat(mDegree, newDegree);
         speedAnimator.setInterpolator(interpolator);
         speedAnimator.setDuration(moveDuration);
+        speedAnimator.removeUpdateListener(speedListener);
         speedAnimator.addUpdateListener(speedListener);
+        speedAnimator.removeListener(animatorListener);
         speedAnimator.addListener(animatorListener);
         speedAnimator.start();
     }
@@ -526,10 +516,10 @@ public class ThirdSpeedView extends SpeedView {
         //取消上次动画效果
         rotateSpeedAnimator.cancel();
 
-//        rotateSpeedAnimator = ValueAnimator.ofFloat(mRotateDegree, newDegree);
-        rotateSpeedAnimator.setFloatValues(mRotateDegree, newDegree);
+        rotateSpeedAnimator = ValueAnimator.ofFloat(mRotateDegree, newDegree);
         rotateSpeedAnimator.setInterpolator(interpolator);
         rotateSpeedAnimator.setDuration(moveDuration);
+        rotateSpeedAnimator.removeUpdateListener(rotateListener);
         rotateSpeedAnimator.addUpdateListener(rotateListener);
         rotateSpeedAnimator.start();
     }
@@ -560,19 +550,22 @@ public class ThirdSpeedView extends SpeedView {
         float originalDegree = (float) mSpeed * (MAX_DEGREE - MIN_DEGREE) / getMaxSpeed() + MIN_DEGREE;
         mad = (originalDegree + mad > MAX_DEGREE) ? MAX_DEGREE - originalDegree
                 : (originalDegree + mad < MIN_DEGREE) ? MIN_DEGREE - originalDegree : mad;
-//        trembleAnimator = ValueAnimator.ofFloat(mDegree, originalDegree + mad);
-        trembleAnimator.setFloatValues(mDegree, originalDegree + mad);
+
+        trembleAnimator = ValueAnimator.ofFloat(mDegree, originalDegree + mad);
         trembleAnimator.setInterpolator(interpolator);
         trembleAnimator.setDuration(1000);
+        trembleAnimator.removeUpdateListener(trembleListener);
         trembleAnimator.addUpdateListener(trembleListener);
+        trembleAnimator.removeListener(animatorListener);
         trembleAnimator.addListener(animatorListener);
         trembleAnimator.start();
     }
 
     private ValueAnimator.AnimatorUpdateListener rotateListener = new ValueAnimator.AnimatorUpdateListener() {
+
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
-            mRotateDegree = (float) rotateSpeedAnimator.getAnimatedValue();
+            mRotateDegree = (float) animation.getAnimatedValue();
             refresh();
         }
     };
@@ -580,7 +573,7 @@ public class ThirdSpeedView extends SpeedView {
     private ValueAnimator.AnimatorUpdateListener speedListener = new ValueAnimator.AnimatorUpdateListener() {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
-            mDegree = (float) speedAnimator.getAnimatedValue();
+            mDegree = (float) animation.getAnimatedValue();
             refresh();
         }
     };
@@ -588,7 +581,7 @@ public class ThirdSpeedView extends SpeedView {
     private ValueAnimator.AnimatorUpdateListener trembleListener = new ValueAnimator.AnimatorUpdateListener() {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
-            mDegree = (float) trembleAnimator.getAnimatedValue();
+            mDegree = (float) animation.getAnimatedValue();
             refresh();
         }
     };
