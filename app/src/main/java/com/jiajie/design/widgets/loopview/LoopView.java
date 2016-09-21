@@ -115,12 +115,10 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
 
         //adapter
         mAdapter = new LoopViewAdapter(data);
-        mAdapter.setOnItemClickListener(new LoopViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Log.e(TAG, "onItemClick: " + position);
-            }
-        });
+        if (listener != null) {
+            mAdapter.setOnItemClickListener(listener);
+        }
+
         mPager.setAdapter(mAdapter);
         mLinearLayout.getChildAt(0).setSelected(true);
         mDesc.setText(data.get(0).getDesc());
