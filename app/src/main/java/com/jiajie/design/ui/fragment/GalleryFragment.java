@@ -36,10 +36,12 @@ import retrofit.Retrofit;
 public class GalleryFragment extends Fragment implements LoadDataScrollController.OnRecycleRefreshListener {
 
     private static final String TAG = GalleryFragment.class.getSimpleName();
-    private OnListFragmentInteractionListener mListener;
-    private SwipeRefreshLayout mRefreshLayout;
+
     private static final int MSG_REFRESH = 1;
     private static final int MSG_LOAD_MORE = 2;
+
+    private OnListFragmentInteractionListener mListener;
+    private SwipeRefreshLayout mRefreshLayout;
     private GalleryItemAdapter adapter;
     private MyHandler handler;
     private int currentPage = 1;
@@ -96,15 +98,14 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
     @SuppressWarnings("unused")
     public static GalleryFragment newInstance() {
         GalleryFragment fragment = new GalleryFragment();
-//        Bundle args = new Bundle();
-//        args.putInt(ARG_COLUMN_COUNT, columnCount);
-//        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        handler = new MyHandler(this);
 
 //        if (getArguments() != null) {
 //            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
@@ -117,7 +118,6 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         Context context = view.getContext();
-        handler = new MyHandler(this);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
@@ -172,10 +172,10 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
                                     , Retrofit retrofit) {
                                 if (response.body() != null) {
                                     DataResponse<DataResult> gank = response.body();
-                                    Log.d(TAG, gank.toString());
+//                                    Log.d(TAG, gank.toString());
                                     List<DataResult> results = gank.getResults();
                                     for (DataResult result : results) {
-                                        Log.i(TAG, result.toString());
+//                                        Log.i(TAG, result.toString());
                                         mImages.add(result);
                                         adapter.notifyItemInserted(mImages.indexOf(result));
                                         //set to recycler view

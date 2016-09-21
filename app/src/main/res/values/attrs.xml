@@ -89,4 +89,9 @@
         <attr name="radarMaxValue" format="float"/>
     </declare-styleable>
 
+    <declare-styleable name="LoopView">
+        <attr name="rate" format="integer"/>
+        <attr name="bottomStyle" format="integer"/>
+    </declare-styleable>
+
 </resources>

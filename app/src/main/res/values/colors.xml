@@ -18,4 +18,7 @@
     <color name="black_overlay">#66000000</color>
 
 
+    <!--loop view-->
+    <color name="desc_color">#92969595</color>
+
 </resources>

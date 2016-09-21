@@ -14,6 +14,7 @@ import android.util.Log;
 import com.jiajie.design.R;
 import com.jiajie.design.api.DataResult;
 import com.jiajie.design.preview.PreviewActivity2;
+import com.jiajie.design.ui.fragment.BannerFragment;
 import com.jiajie.design.ui.fragment.BezierFragment;
 import com.jiajie.design.ui.fragment.GalleryFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
@@ -77,13 +78,14 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
-        private static final int NUM_PAGES = 5;
+        private static final int NUM_PAGES = 6;
 
         private static final int FRAGMENT_SELECT_PHOTO = 0;
         private static final int FRAGMENT_GALLERY = 1;
-        private static final int FRAGMENT_SPEED = 2;
-        private static final int FRAGMENT_RADAR = 3;
-        private static final int FRAGMENT_BEZIER = 4;
+        private static final int FRAGMENT_BANNER = 2;
+        private static final int FRAGMENT_SPEED = 3;
+        private static final int FRAGMENT_RADAR = 4;
+        private static final int FRAGMENT_BEZIER = 5;
 
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -103,7 +105,8 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
                     return new RadarFragment();
                 case FRAGMENT_BEZIER:
                     return new BezierFragment();
-
+                case FRAGMENT_BANNER:
+                    return new BannerFragment();
             }
             return null;
         }

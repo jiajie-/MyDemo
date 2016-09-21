@@ -5,4 +5,8 @@
 
     <integer name="span_count">2</integer>
 
+    <integer name="loop_have_desc">1</integer>
+    <integer name="loop_no_desc_right">2</integer>
+    <integer name="loop_no_desc_center">3</integer>
+
 </resources>
