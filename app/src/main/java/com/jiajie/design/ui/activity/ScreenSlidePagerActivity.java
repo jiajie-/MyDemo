@@ -33,7 +33,7 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
 
     private ViewPager mPager;
 
-    private PagerAdapter mPagerAdapter;
+    PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,7 +76,7 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
         startActivity(intent);
     }
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    private static class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         private static final int NUM_PAGES = 6;
 
@@ -87,7 +87,7 @@ public class ScreenSlidePagerActivity extends AppCompatActivity implements Galle
         private static final int FRAGMENT_RADAR = 4;
         private static final int FRAGMENT_BEZIER = 5;
 
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+        ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

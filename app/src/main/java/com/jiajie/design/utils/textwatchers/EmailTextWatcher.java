@@ -16,8 +16,8 @@ public class EmailTextWatcher extends ErrorTextWatcher {
         this(textInputLayout, R.string.error_invalid_email);
     }
 
-    public EmailTextWatcher(@NonNull final TextInputLayout textInputLayout,
-                            @StringRes final int errorMessage) {
+    private EmailTextWatcher(@NonNull final TextInputLayout textInputLayout,
+                     @StringRes final int errorMessage) {
         super(textInputLayout, textInputLayout.getContext().getString(errorMessage));
     }
 

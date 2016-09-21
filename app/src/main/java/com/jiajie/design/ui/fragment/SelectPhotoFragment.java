@@ -31,6 +31,7 @@ import com.jiajie.design.ui.activity.ListImageDirPopupWindow;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -64,17 +65,15 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
 
     private ListImageDirPopupWindow mPopupWindow;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == DATA_LOADED) {
-                mProgressDialog.dismiss();
-                refreshView();
+    private MyHandler mHandler;
 
-                initDirPopupWindow();
-            }
-        }
-    };
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mHandler = new MyHandler(this);
+
+    }
 
     @Nullable
     @Override
@@ -273,6 +272,28 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
         intent.putExtra("index", mImages.indexOf(file));
         intent.putExtra("path", mCurrentDir.getAbsolutePath());
         startActivity(intent);
+    }
+
+    private static class MyHandler extends Handler {
+
+        private WeakReference<SelectPhotoFragment> weakReference;
+
+        MyHandler(SelectPhotoFragment selectPhotoFragment) {
+            this.weakReference = new WeakReference<>(selectPhotoFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            SelectPhotoFragment selectPhotoFragment = weakReference.get();
+
+            if (selectPhotoFragment != null) {
+                if (msg.what == DATA_LOADED) {
+                    selectPhotoFragment.mProgressDialog.dismiss();
+                    selectPhotoFragment.refreshView();
+                    selectPhotoFragment.initDirPopupWindow();
+                }
+            }
+        }
     }
 
 }

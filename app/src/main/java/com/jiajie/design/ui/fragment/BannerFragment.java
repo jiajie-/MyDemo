@@ -99,7 +99,7 @@ public class BannerFragment extends Fragment {
 
         private WeakReference<BannerFragment> bannerFragmentWeakReference;
 
-        public MyHandler(BannerFragment bannerFragment) {
+        MyHandler(BannerFragment bannerFragment) {
             this.bannerFragmentWeakReference = new WeakReference<>(bannerFragment);
         }
 

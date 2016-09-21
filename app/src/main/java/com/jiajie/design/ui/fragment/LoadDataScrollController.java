@@ -6,9 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.jiajie.design.ui.fragment.LayoutManagerType;
-
-public class LoadDataScrollController extends RecyclerView.OnScrollListener
+class LoadDataScrollController extends RecyclerView.OnScrollListener
         implements SwipeRefreshLayout.OnRefreshListener {
 
     /**
@@ -16,32 +14,27 @@ public class LoadDataScrollController extends RecyclerView.OnScrollListener
      */
     private LayoutManagerType mLayoutManagerType;
 
-
     /**
      * 当前RecycleView显示的最大条目
      */
     private int mLastVisibleItemPosition;
 
-
     /**
      * 每列的最后一个条目
      */
-    private int[] mLastPostions;
-
+    private int[] mLastPositions;
 
     /**
      * 是否正在加载数据 包括刷新和向上加载更多
      */
     private boolean isLoadData = false;
 
-
     /**
      * 回调接口
      */
     private OnRecycleRefreshListener mListener;
 
-
-    public LoadDataScrollController(OnRecycleRefreshListener onRecycleRefreshListener) {
+    LoadDataScrollController(OnRecycleRefreshListener onRecycleRefreshListener) {
         this.mListener = onRecycleRefreshListener;
     }
 
@@ -76,11 +69,11 @@ public class LoadDataScrollController extends RecyclerView.OnScrollListener
                 break;
             case STAGGERED_GRID_LAYOUT:
                 StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-                if (mLastPostions == null) {
-                    mLastPostions = new int[staggeredGridLayoutManager.getSpanCount()];
+                if (mLastPositions == null) {
+                    mLastPositions = new int[staggeredGridLayoutManager.getSpanCount()];
                 }
-                staggeredGridLayoutManager.findLastVisibleItemPositions(mLastPostions);
-                mLastVisibleItemPosition = findMax(mLastPostions);
+                staggeredGridLayoutManager.findLastVisibleItemPositions(mLastPositions);
+                mLastVisibleItemPosition = findMax(mLastPositions);
                 break;
             default:
                 break;
@@ -98,10 +91,10 @@ public class LoadDataScrollController extends RecyclerView.OnScrollListener
         int totalCount = layoutManager.getItemCount();
 
         // 四个条件，分别是是否有数据，状态是否是滑动停止状态，显示的最大条目是否大于整个数据（注意偏移量），是否正在加载数据
-        if (visibleCount > 0
-                && newState == RecyclerView.SCROLL_STATE_IDLE
-                && mLastVisibleItemPosition >= totalCount - 1
-                && !isLoadData) {
+        if (visibleCount > 0 &&
+                newState == RecyclerView.SCROLL_STATE_IDLE &&
+                mLastVisibleItemPosition >= totalCount - 1 &&
+                !isLoadData) {
             //可以加载数据
             if (mListener != null) {
                 isLoadData = true;
@@ -126,7 +119,7 @@ public class LoadDataScrollController extends RecyclerView.OnScrollListener
     }
 
 
-    public void setLoadDataStatus(boolean isLoadData) {
+    void setLoadDataStatus(boolean isLoadData) {
         this.isLoadData = isLoadData;
     }
 
@@ -137,7 +130,6 @@ public class LoadDataScrollController extends RecyclerView.OnScrollListener
             isLoadData = true;
             mListener.refresh();
         }
-
     }
 
     /**

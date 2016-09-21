@@ -20,7 +20,7 @@ public class LoopViewAdapter extends PagerAdapter {
     private List<LoopViewItem> items;
     private OnItemClickListener listener;
 
-    public LoopViewAdapter(List<LoopViewItem> items) {
+    LoopViewAdapter(List<LoopViewItem> items) {
         this.items = items;
     }
 
@@ -34,7 +34,7 @@ public class LoopViewAdapter extends PagerAdapter {
         return super.getItemPosition(object);
     }
 
-    public LoopViewItem getItemAt(int position) {
+    LoopViewItem getItemAt(int position) {
         return items.get(position);
     }
 
@@ -45,8 +45,8 @@ public class LoopViewAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_loopview, null);
-        ImageView imageView = (ImageView) view.findViewById(R.id.loop_image);
+        View itemView = LayoutInflater.from(container.getContext()).inflate(R.layout.item_loopview, null);
+        ImageView imageView = (ImageView) itemView.findViewById(R.id.loop_image);
         Glide.with(container.getContext())
                 .load(items.get(position).getImageUrl())
                 .centerCrop()
@@ -60,8 +60,8 @@ public class LoopViewAdapter extends PagerAdapter {
                 }
             });
         }
-        container.addView(view);
-        return view;
+        container.addView(itemView);
+        return itemView;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class LoopViewAdapter extends PagerAdapter {
         void onItemClick(int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 

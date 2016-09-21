@@ -26,7 +26,7 @@ public class EmailAddressValidator implements Validator<String> {
         return new ValidatorError[]{EmailAddressValidatorError.EMAIL_INVALID};
     }
 
-    public enum EmailAddressValidatorError implements ValidatorError {
+    private enum EmailAddressValidatorError implements ValidatorError {
         EMAIL_INVALID
     }
 }

@@ -22,7 +22,7 @@ public class PreviewActivity2 extends AppCompatActivity {
 
     private static final String TAG = "PreviewActivity2";
 
-    private ViewPager mViewPager;
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,8 +38,7 @@ public class PreviewActivity2 extends AppCompatActivity {
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                ZoomImageView imageView = new ZoomImageView(getApplicationContext());
-//                ImageLoader.getInstance().loadImage(list[position], imageView);
+                ZoomImageView imageView = new ZoomImageView(container.getContext());
                 Log.e(TAG, "instantiateItem: " + urls[position]);
                 Glide.with(container.getContext())
                         .load(urls[position])

@@ -190,16 +190,15 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
 
     private static class AutoRunnable implements Runnable {
 
-        private WeakReference<LoopView> loopViewWeakReference;
+        private WeakReference<LoopView> weakReference;
 
-
-        public AutoRunnable(LoopView loopView) {
-            this.loopViewWeakReference = new WeakReference<>(loopView);
+        private AutoRunnable(LoopView loopView) {
+            this.weakReference = new WeakReference<>(loopView);
         }
 
         @Override
         public void run() {
-            LoopView loopView = loopViewWeakReference.get();
+            LoopView loopView = weakReference.get();
             if (loopView != null) {
                 synchronized (this) {
                     loopView.mCurrentPos = (loopView.mCurrentPos + 1) % loopView.mAdapter.getCount();
@@ -211,15 +210,15 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
 
     private static class MyHandler extends Handler {
 
-        private WeakReference<LoopView> loopViewWeakReference;
+        private WeakReference<LoopView> weakReference;
 
-        public MyHandler(LoopView loopView) {
-            this.loopViewWeakReference = new WeakReference<>(loopView);
+        private MyHandler(LoopView loopView) {
+            this.weakReference = new WeakReference<>(loopView);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            LoopView loopView = loopViewWeakReference.get();
+            LoopView loopView = weakReference.get();
 
             if (loopView != null) {
                 loopView.mPager.setCurrentItem(loopView.mCurrentPos, true);

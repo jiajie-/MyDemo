@@ -31,9 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiajie.design.R;
+import com.jiajie.design.utils.Constants;
 import com.jiajie.design.utils.textwatchers.EmailTextWatcher;
 import com.jiajie.design.utils.textwatchers.PasswordTextWatcher;
-import com.jiajie.design.utils.Constants;
 import com.jiajie.design.widgets.ClearAutoCompleteTextView;
 import com.jiajie.design.widgets.ClearEditText;
 
@@ -394,7 +394,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, MODE_PRIVATE).edit()
                             .putString(Constants.FIELD_EMAIL, mEmailView.getText().toString())
                             .putString(Constants.FIELD_PASSWORD, mPasswordView.getText().toString())
-                            .commit();
+                            .apply();
                 }
                 //close and start main activity
                 finish();

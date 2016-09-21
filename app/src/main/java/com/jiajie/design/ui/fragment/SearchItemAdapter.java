@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiajie.design.R;
-import com.jiajie.design.ui.fragment.SearchFragment.SearchInteractionListener;
 import com.jiajie.design.api.SearchResult;
+import com.jiajie.design.ui.fragment.SearchFragment.SearchInteractionListener;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * {@link RecyclerView.Adapter} that can display a {@link SearchResult} and makes a call to the
  * specified {@link SearchInteractionListener}.
  */
-public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = SearchItemAdapter.class.getSimpleName();
     private static final int TYPE_EMPTY = 0;
@@ -27,7 +27,7 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private final List<SearchResult> mValues;
     private final SearchInteractionListener mListener;
 
-    public SearchItemAdapter(List<SearchResult> items, SearchInteractionListener listener) {
+    SearchItemAdapter(List<SearchResult> items, SearchInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -62,28 +62,28 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         Log.v(TAG, "onBindViewHolder: " + position);
         if (holder instanceof ViewHolder) {
             ((ViewHolder) holder).mItem = mValues.get(position);
-//        ((ViewHolder)holder).mImage.setImageBitmap();
+
             ((ViewHolder) holder).mTitle.setText(mValues.get(position).getDesc());
             ((ViewHolder) holder).mAuthor.setText(mValues.get(position).getWho());
             ((ViewHolder) holder).mType.setText(mValues.get(position).getType());
             ((ViewHolder) holder).mTime.setText(mValues.get(position).getPublishedAt());
 
-            ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null) {
+            if (mListener != null) {
+                ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         // Notify the active callbacks interface (the activity, if the
                         // fragment is attached to one) that an item has been selected.
                         mListener.onSearchItemClick(((ViewHolder) holder).mItem);
                     }
-                }
-            });
+                });
+            }
         } else if (holder instanceof EmptyViewHolder) {
 //            ((EmptyViewHolder)holder).mEmpty.setText();
         }
     }
 
-    public void addItem(int position, SearchResult searchResult) {
+    void addItem(int position, SearchResult searchResult) {
         mValues.add(position, searchResult);
         notifyItemInserted(position);
     }
@@ -103,16 +103,16 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final ImageView mImage;
-        public final TextView mTitle;
-        public final TextView mAuthor;
-        public final TextView mType;
-        public final TextView mTime;
-        public SearchResult mItem;
+    private static class ViewHolder extends RecyclerView.ViewHolder {
+        private View mView;
+        private ImageView mImage;
+        private TextView mTitle;
+        private TextView mAuthor;
+        private TextView mType;
+        private TextView mTime;
+        private SearchResult mItem;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mImage = (ImageView) itemView.findViewById(R.id.iv_image);
@@ -128,11 +128,11 @@ public class SearchItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    public class EmptyViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mEmpty;
+    private static class EmptyViewHolder extends RecyclerView.ViewHolder {
+        private View mView;
+        private TextView mEmpty;
 
-        public EmptyViewHolder(View itemView) {
+        EmptyViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
             mEmpty = (TextView) itemView.findViewById(R.id.tv_empty);

@@ -3,6 +3,7 @@ package com.jiajie.design;
 import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 /**
  * MyApplication
@@ -10,11 +11,16 @@ import com.squareup.leakcanary.LeakCanary;
  */
 public class MyApplication extends Application {
 
+    private static RefWatcher mRefWatcher;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        LeakCanary.install(this);
+        mRefWatcher = LeakCanary.install(this);
     }
 
+    public static RefWatcher getRefWatcher() {
+        return mRefWatcher;
+    }
 
 }

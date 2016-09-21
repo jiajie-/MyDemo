@@ -71,9 +71,7 @@ public class ImageAdapter extends BaseAdapter {
         Glide.with(convertView.getContext())
                 .load(filePath)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .placeholder(R.drawable.ic_place_holder) // can also be a drawable.
                 .into(viewHolder.mImageView);
-//        ImageLoader.getInstance(3, ImageLoader.Type.LIFO).loadImage(filePath, viewHolder.mImageView);
 
         viewHolder.mSelect.setOnClickListener(new View.OnClickListener() {
             @Override

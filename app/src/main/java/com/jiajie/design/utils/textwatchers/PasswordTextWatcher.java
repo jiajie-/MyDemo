@@ -19,9 +19,9 @@ public class PasswordTextWatcher extends ErrorTextWatcher {
         this(textInputLayout, minLength, R.string.error_invalid_password);
     }
 
-    public PasswordTextWatcher(@NonNull final TextInputLayout textInputLayout,
-                               final int minLength,
-                               @StringRes final int errorMessage) {
+    private PasswordTextWatcher(@NonNull final TextInputLayout textInputLayout,
+                                final int minLength,
+                                @StringRes final int errorMessage) {
         super(textInputLayout,
                 String.format(textInputLayout.getContext().getString(errorMessage), minLength));
         this.mMinLength = minLength;

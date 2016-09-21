@@ -101,8 +101,8 @@ abstract public class SpeedView extends View {
          * 测量模式一共有三种， 被定义在 Android 中的 View 类的一个内部类View.MeasureSpec中：
          * 如果对View的宽高进行修改了，不要调用super.onMeasure(widthMeasureSpec,heightMeasureSpec);要调用setMeasuredDimension(widthsize,heightsize); 这个函数。
          */
-        int widthmode = MeasureSpec.getMode(widthMeasureSpec);      //取出宽度的测量模式
-        int heightmode = MeasureSpec.getMode(heightMeasureSpec);    //取出高度的测量模式
+//        int widthmode = MeasureSpec.getMode(widthMeasureSpec);      //取出宽度的测量模式
+//        int heightmode = MeasureSpec.getMode(heightMeasureSpec);    //取出高度的测量模式
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         int size = (width > height) ? height : width;

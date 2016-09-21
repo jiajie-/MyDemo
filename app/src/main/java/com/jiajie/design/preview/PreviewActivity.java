@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.jiajie.design.MyApplication;
 import com.jiajie.design.R;
 
 /**
@@ -21,7 +22,8 @@ import com.jiajie.design.R;
 public class PreviewActivity extends AppCompatActivity {
 
     private static final String TAG = "PreviewActivity";
-    private ViewPager mViewPager;
+
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,8 +40,7 @@ public class PreviewActivity extends AppCompatActivity {
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
-                ZoomImageView imageView = new ZoomImageView(getApplicationContext());
-//                ImageLoader.getInstance().loadImage(list[position], imageView);
+                ZoomImageView imageView = new ZoomImageView(container.getContext());
                 String p = path + "/" + list[position];
                 Log.e(TAG, "instantiateItem: " + p);
                 Glide.with(container.getContext())
@@ -71,4 +72,9 @@ public class PreviewActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApplication.getRefWatcher().watch(this);
+    }
 }

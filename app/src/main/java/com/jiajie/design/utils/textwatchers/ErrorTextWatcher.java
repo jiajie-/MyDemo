@@ -9,7 +9,7 @@ import android.text.TextWatcher;
  * ErrorTextWatcher
  * Created by jiajie on 16/7/4.
  */
-public abstract class ErrorTextWatcher implements TextWatcher {
+abstract class ErrorTextWatcher implements TextWatcher {
 
     private TextInputLayout mTextInputLayout;
     private String errorMessage;

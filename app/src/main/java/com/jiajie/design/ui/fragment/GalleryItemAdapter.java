@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.R;
-import com.jiajie.design.ui.fragment.GalleryFragment.OnListFragmentInteractionListener;
 import com.jiajie.design.api.DataResult;
+import com.jiajie.design.ui.fragment.GalleryFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.ViewHolder> {
+class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.ViewHolder> {
 
     private static final String TAG = GalleryItemAdapter.class.getSimpleName();
 
@@ -29,7 +29,7 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
     private final List<DataResult> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public GalleryItemAdapter(Context context, List<DataResult> items, OnListFragmentInteractionListener listener) {
+    GalleryItemAdapter(Context context, List<DataResult> items, OnListFragmentInteractionListener listener) {
         mContext = context;
         mValues = items;
         mListener = listener;
@@ -67,16 +67,17 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
 
         holder.text.setText(result.getDesc());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
+        if (mListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(mValues,result);
+                    mListener.onListFragmentInteraction(mValues, result);
                 }
-            }
-        });
+            });
+        }
+
     }
 
     @Override
@@ -84,12 +85,12 @@ public class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView text;
         ImageView image;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
         }
 

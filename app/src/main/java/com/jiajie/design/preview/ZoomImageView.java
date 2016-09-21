@@ -15,17 +15,19 @@ import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 
+import java.lang.ref.WeakReference;
+
 /**
  * ZoomImageView 放大后可以自由移动，多指缩放
  * ScaleGestureDetector 捕获缩放事件
  * onTouch
  * onScale
  * Matrix
- *
+ * <p>
  * 双击放大、缩小
  * GestureDetector 捕获双击事件
  * postDelay + Runnable
- *
+ * <p>
  * Created by jiajie on 16/9/17.
  */
 public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
@@ -85,10 +87,10 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
                 float y = e.getY();
 
                 if (getCurrentScale() < mMidScale) {
-                    postDelayed(new AutoScaleRunnable(mMidScale, x, y), AUTO_SCALE_DELAY_MILLS);
+                    postDelayed(new AutoScaleRunnable(ZoomImageView.this, mMidScale, x, y), AUTO_SCALE_DELAY_MILLS);
                     isAutoScale = true;
                 } else {
-                    postDelayed(new AutoScaleRunnable(mInitScale, x, y), AUTO_SCALE_DELAY_MILLS);
+                    postDelayed(new AutoScaleRunnable(ZoomImageView.this, mInitScale, x, y), AUTO_SCALE_DELAY_MILLS);
                     isAutoScale = true;
                 }
 
@@ -399,7 +401,9 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
     /**
      * 自动放大、缩小 任务线程
      */
-    private class AutoScaleRunnable implements Runnable {
+    private static class AutoScaleRunnable implements Runnable {
+
+        private WeakReference<ZoomImageView> weakReference;
 
         //缩放目标值
         private float mTargetScale;
@@ -412,12 +416,14 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 
         private float tmpScale;
 
-        public AutoScaleRunnable(float mTargetScale, float x, float y) {
+        AutoScaleRunnable(ZoomImageView zoomImageView, float mTargetScale, float x, float y) {
+            this.weakReference = new WeakReference<>(zoomImageView);
+
             this.mTargetScale = mTargetScale;
             this.x = x;
             this.y = y;
 
-            float currentScale = getCurrentScale();
+            float currentScale = weakReference.get().getCurrentScale();
 
             if (currentScale < mTargetScale) {
                 tmpScale = BIGGER;
@@ -429,27 +435,28 @@ public class ZoomImageView extends ImageView implements OnGlobalLayoutListener,
 
         @Override
         public void run() {
+            ZoomImageView zoomImageView = weakReference.get();
+            if (zoomImageView != null) {
+                //每次缩放 tmpScale(BIGGER or SMALLER)
+                zoomImageView.mScaleMatrix.postScale(tmpScale, tmpScale, x, y);
+                zoomImageView.checkBorderAndCenterWhenScale();
+                zoomImageView.setImageMatrix(zoomImageView.mScaleMatrix);
 
-            //每次缩放 tmpScale(BIGGER or SMALLER)
-            mScaleMatrix.postScale(tmpScale, tmpScale, x, y);
-            checkBorderAndCenterWhenScale();
-            setImageMatrix(mScaleMatrix);
-
-            float currentScale = getCurrentScale();
-            if ((tmpScale > 1.0f) && currentScale < mTargetScale ||
-                    (tmpScale < 1.0f && currentScale > mTargetScale)) {
-                // 放大or缩小 过程
-                postDelayed(this, AUTO_SCALE_DELAY_MILLS);
-            } else {
-                // 缩放完成，设置为目标值
-                float scale = mTargetScale / currentScale;
-                mScaleMatrix.postScale(scale, scale, x, y);
-                checkBorderAndCenterWhenScale();
-                setImageMatrix(mScaleMatrix);
-                //取消缩放状态
-                isAutoScale = false;
+                float currentScale = zoomImageView.getCurrentScale();
+                if ((tmpScale > 1.0f) && currentScale < mTargetScale ||
+                        (tmpScale < 1.0f && currentScale > mTargetScale)) {
+                    // 放大or缩小 过程
+                    zoomImageView.postDelayed(this, AUTO_SCALE_DELAY_MILLS);
+                } else {
+                    // 缩放完成，设置为目标值
+                    float scale = mTargetScale / currentScale;
+                    zoomImageView.mScaleMatrix.postScale(scale, scale, x, y);
+                    zoomImageView.checkBorderAndCenterWhenScale();
+                    zoomImageView.setImageMatrix(zoomImageView.mScaleMatrix);
+                    //取消缩放状态
+                    zoomImageView.isAutoScale = false;
+                }
             }
-
         }
 
     }

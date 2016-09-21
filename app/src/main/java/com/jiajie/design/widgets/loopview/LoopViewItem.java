@@ -1,6 +1,7 @@
 package com.jiajie.design.widgets.loopview;
 
 /**
+ * LoopViewItem for LoopView
  * Created by jiajie on 16/9/21.
  */
 public class LoopViewItem {
@@ -8,7 +9,7 @@ public class LoopViewItem {
     private String imageUrl;
     private String desc;
 
-    public String getImageUrl() {
+    String getImageUrl() {
         return imageUrl;
     }
 
@@ -16,7 +17,7 @@ public class LoopViewItem {
         this.imageUrl = imageUrl;
     }
 
-    public String getDesc() {
+    String getDesc() {
         return desc;
     }
 

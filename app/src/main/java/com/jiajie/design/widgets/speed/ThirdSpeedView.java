@@ -18,6 +18,7 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 
 import com.jiajie.design.R;
 
@@ -102,6 +103,8 @@ public class ThirdSpeedView extends SpeedView {
             rotateSpeedAnimator,
             trembleAnimator;
 
+    private Interpolator interpolator;
+
     public ThirdSpeedView(Context context) {
         this(context, null);
     }
@@ -116,7 +119,9 @@ public class ThirdSpeedView extends SpeedView {
     }
 
     @Override
-    protected void init() {//init path,paint,textPaint,rectF,animator
+    protected void init() {
+        //init path,paint,textPaint,rectF,animator
+
         //paths
         indicatorPath = new Path();//指针
         markPath = new Path();//大刻度
@@ -163,8 +168,18 @@ public class ThirdSpeedView extends SpeedView {
 
         //animator
         speedAnimator = ValueAnimator.ofFloat(0f, 1f);
+//        speedAnimator.setInterpolator(interpolator);
+//        speedAnimator.addUpdateListener(speedListener);
+//        speedAnimator.addListener(animatorListener);
+
         rotateSpeedAnimator = ValueAnimator.ofFloat(0f, 1f);
+//        rotateSpeedAnimator.setInterpolator(interpolator);
+//        rotateSpeedAnimator.addUpdateListener(rotateListener);
+
         trembleAnimator = ValueAnimator.ofFloat(0f, 1f);
+//        trembleAnimator.setInterpolator(interpolator);
+//        trembleAnimator.addUpdateListener(trembleListener);
+//        trembleAnimator.addListener(animatorListener);
 
         //set point effects,to draw a dash line
         pointPaint.setPathEffect(new DashPathEffect(new float[]{3f, 97f}, 0));
@@ -173,6 +188,8 @@ public class ThirdSpeedView extends SpeedView {
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
         setWithEffects(mWithEffects);
+
+        interpolator = new DecelerateInterpolator();
     }
 
     private void initAttributeSet(Context context, AttributeSet attrs) {
@@ -289,7 +306,6 @@ public class ThirdSpeedView extends SpeedView {
 
     @Override
     protected void drawStaticSpeedView(Canvas canvas) {
-        Log.d(TAG, "drawStaticSpeedView: ");
         float backgroundCircleRadius = mWidth / 2f;
 
         //background circle
@@ -303,8 +319,10 @@ public class ThirdSpeedView extends SpeedView {
             double angle = MARK_DEGREE * i + 60f;
             String value = String.valueOf(scaleValue);
             float textWidth = markTextPaint.measureText(value);//20,40,60
-            float scaleValuePositionX = (float) (centerX - Math.sin(Math.toRadians(angle)) * mMarkTextRadius);
-            float scaleValuePositionY = (float) (centerY + Math.cos(Math.toRadians(angle)) * mMarkTextRadius);
+            float scaleValuePositionX =
+                    (float) (centerX - Math.sin(Math.toRadians(angle)) * mMarkTextRadius);
+            float scaleValuePositionY =
+                    (float) (centerY + Math.cos(Math.toRadians(angle)) * mMarkTextRadius);
             canvas.drawText(value, scaleValuePositionX - textWidth / 2,
                     scaleValuePositionY + getTextHeight(value, markTextPaint) / 2, markTextPaint);
             scaleValue += 20;
@@ -334,8 +352,8 @@ public class ThirdSpeedView extends SpeedView {
 
         //rotate speed
         float offset = 2f;
-        canvas.drawArc(rotateSpeedRect, 30f + offset / 2, MAX_ROTATE_DEGREE - offset, false, rotateSpeedStaticPaint);
-
+        canvas.drawArc(rotateSpeedRect, 30f + offset / 2, MAX_ROTATE_DEGREE - offset,
+                false, rotateSpeedStaticPaint);
     }
 
     @Override
@@ -344,7 +362,8 @@ public class ThirdSpeedView extends SpeedView {
 
         //radial area
         if (mDegree - MIN_DEGREE != 0) {
-            canvas.drawArc(insideCircleRect, MIN_DEGREE, mDegree - MIN_DEGREE, true, radialGradientPaint);
+            canvas.drawArc(insideCircleRect, MIN_DEGREE, mDegree - MIN_DEGREE,
+                    true, radialGradientPaint);
         }
 
         //indicator
@@ -367,7 +386,8 @@ public class ThirdSpeedView extends SpeedView {
 
         //rotate speed text
         String rotateSpeedText = String.format(Locale.getDefault(), "%d",
-                (int) ((mRotateDegree - MIN_ROTATE_DEGREE) * mMaxRotateSpeed / (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE))) + " RPM";
+                (int) ((mRotateDegree - MIN_ROTATE_DEGREE) * mMaxRotateSpeed /
+                        (MAX_ROTATE_DEGREE - MIN_ROTATE_DEGREE))) + " RPM";
         canvas.drawText(rotateSpeedText, centerX, centerY * 1.7f, rotateSpeedTextPaint);
 
         //scale down canvas
@@ -375,7 +395,8 @@ public class ThirdSpeedView extends SpeedView {
         //rotate speed arc ,make some offset here,to draw normally
         float offset = 2f;
         if (mRotateDegree >= offset) {
-            canvas.drawArc(rotateSpeedRect, 30f + offset / 2, mRotateDegree - offset, false, rotateSpeedActivePaint);
+            canvas.drawArc(rotateSpeedRect, 30f + offset / 2, mRotateDegree - offset,
+                    false, rotateSpeedActivePaint);
         }
 
         //small mark
@@ -393,7 +414,6 @@ public class ThirdSpeedView extends SpeedView {
             canvas.rotate(SMALL_MARK_DEGREE, centerX, centerY);
         }
         canvas.restore();
-
     }
 
     @Override
@@ -420,8 +440,10 @@ public class ThirdSpeedView extends SpeedView {
         //取消上次动画效果
         cancel();
 
-        speedAnimator = ValueAnimator.ofFloat(mDegree, newDegree);
-        speedAnimator.setInterpolator(new DecelerateInterpolator());
+        Log.e(TAG, "speedTo: speedAnimator == null ? " + (speedAnimator == null));
+//        speedAnimator = ValueAnimator.ofFloat(mDegree, newDegree);
+        speedAnimator.setFloatValues(mDegree, newDegree);
+        speedAnimator.setInterpolator(interpolator);
         speedAnimator.setDuration(moveDuration);
         speedAnimator.addUpdateListener(speedListener);
         speedAnimator.addListener(animatorListener);
@@ -504,8 +526,9 @@ public class ThirdSpeedView extends SpeedView {
         //取消上次动画效果
         rotateSpeedAnimator.cancel();
 
-        rotateSpeedAnimator = ValueAnimator.ofFloat(mRotateDegree, newDegree);
-        rotateSpeedAnimator.setInterpolator(new DecelerateInterpolator());
+//        rotateSpeedAnimator = ValueAnimator.ofFloat(mRotateDegree, newDegree);
+        rotateSpeedAnimator.setFloatValues(mRotateDegree, newDegree);
+        rotateSpeedAnimator.setInterpolator(interpolator);
         rotateSpeedAnimator.setDuration(moveDuration);
         rotateSpeedAnimator.addUpdateListener(rotateListener);
         rotateSpeedAnimator.start();
@@ -537,8 +560,9 @@ public class ThirdSpeedView extends SpeedView {
         float originalDegree = (float) mSpeed * (MAX_DEGREE - MIN_DEGREE) / getMaxSpeed() + MIN_DEGREE;
         mad = (originalDegree + mad > MAX_DEGREE) ? MAX_DEGREE - originalDegree
                 : (originalDegree + mad < MIN_DEGREE) ? MIN_DEGREE - originalDegree : mad;
-        trembleAnimator = ValueAnimator.ofFloat(mDegree, originalDegree + mad);
-        trembleAnimator.setInterpolator(new DecelerateInterpolator());
+//        trembleAnimator = ValueAnimator.ofFloat(mDegree, originalDegree + mad);
+        trembleAnimator.setFloatValues(mDegree, originalDegree + mad);
+        trembleAnimator.setInterpolator(interpolator);
         trembleAnimator.setDuration(1000);
         trembleAnimator.addUpdateListener(trembleListener);
         trembleAnimator.addListener(animatorListener);
