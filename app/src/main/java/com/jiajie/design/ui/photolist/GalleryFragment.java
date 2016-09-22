@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.fragment;
+package com.jiajie.design.ui.photolist;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -33,7 +33,7 @@ import retrofit.Retrofit;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class GalleryFragment extends Fragment implements LoadDataScrollController.OnRecycleRefreshListener {
+public class GalleryFragment extends Fragment implements ScrollController.OnScrollListener {
 
     private static final String TAG = GalleryFragment.class.getSimpleName();
 
@@ -46,7 +46,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
     private MyHandler handler;
     private int currentPage = 1;
 
-    private LoadDataScrollController mController;
+    private ScrollController mController;
 
     private static class MyHandler extends Handler {
 
@@ -121,7 +121,7 @@ public class GalleryFragment extends Fragment implements LoadDataScrollControlle
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-        mController = new LoadDataScrollController(this);
+        mController = new ScrollController(this);
         recyclerView.addOnScrollListener(mController);
         mRefreshLayout.setOnRefreshListener(mController);
 

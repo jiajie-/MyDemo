@@ -13,10 +13,10 @@ import android.util.Log;
 
 import com.jiajie.design.R;
 import com.jiajie.design.api.DataResult;
-import com.jiajie.design.preview.PreviewActivity2;
+import com.jiajie.design.ui.photolist.PreviewActivity2;
 import com.jiajie.design.ui.fragment.BannerFragment;
 import com.jiajie.design.ui.fragment.BezierFragment;
-import com.jiajie.design.ui.fragment.GalleryFragment;
+import com.jiajie.design.ui.photolist.GalleryFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
 import com.jiajie.design.ui.photopicker.SelectPhotoFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;

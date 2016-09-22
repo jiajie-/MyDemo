@@ -29,7 +29,7 @@ import com.jiajie.design.api.GankService;
 import com.jiajie.design.api.SearchResponse;
 import com.jiajie.design.api.SearchResult;
 import com.jiajie.design.ui.fragment.CameraFragment;
-import com.jiajie.design.ui.fragment.GalleryFragment;
+import com.jiajie.design.ui.photolist.GalleryFragment;
 import com.jiajie.design.ui.fragment.SearchFragment;
 
 import java.util.List;

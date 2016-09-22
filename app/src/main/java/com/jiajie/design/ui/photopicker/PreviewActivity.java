@@ -21,7 +21,7 @@ import com.jiajie.design.widgets.ZoomImageView;
  */
 public class PreviewActivity extends AppCompatActivity {
 
-    private static final String TAG = "PreviewActivity";
+    private static final String TAG = PreviewActivity.class.getSimpleName();
 
     ViewPager mViewPager;
 
@@ -42,11 +42,12 @@ public class PreviewActivity extends AppCompatActivity {
             public Object instantiateItem(ViewGroup container, int position) {
                 ZoomImageView imageView = new ZoomImageView(container.getContext());
                 String p = path + "/" + list[position];
-//                Log.e(TAG, "instantiateItem: " + p);
+
                 Glide.with(container.getContext())
                         .load(p)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageView);
+
                 container.addView(imageView);
                 mImageViews[position] = imageView;
                 return imageView;

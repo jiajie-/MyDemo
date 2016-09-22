@@ -34,7 +34,7 @@
         </activity>
 
         <activity android:name=".ui.photopicker.PreviewActivity"/>
-        <activity android:name=".preview.PreviewActivity2"/>
+        <activity android:name=".ui.photolist.PreviewActivity2"/>
 
         <activity
             android:name=".ui.activity.FullscreenActivity"

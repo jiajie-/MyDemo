@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.fragment;
+package com.jiajie.design.ui.photolist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.R;
 import com.jiajie.design.api.DataResult;
-import com.jiajie.design.ui.fragment.GalleryFragment.OnListFragmentInteractionListener;
+import com.jiajie.design.ui.photolist.GalleryFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
@@ -67,16 +67,14 @@ class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.ViewHol
 
         holder.text.setText(result.getDesc());
 
-        if (mListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
                     mListener.onListFragmentInteraction(mValues, result);
                 }
-            });
-        }
+            }
+        });
 
     }
 

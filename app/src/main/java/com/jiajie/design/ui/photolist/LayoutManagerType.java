@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.fragment;
+package com.jiajie.design.ui.photolist;
 
 /**
  * RecycleView的布局管理器的类型

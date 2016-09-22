@@ -1,11 +1,10 @@
-package com.jiajie.design.preview;
+package com.jiajie.design.ui.photolist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,7 +20,7 @@ import com.jiajie.design.widgets.ZoomImageView;
  */
 public class PreviewActivity2 extends AppCompatActivity {
 
-    private static final String TAG = "PreviewActivity2";
+    private static final String TAG = PreviewActivity2.class.getSimpleName();
 
     ViewPager mViewPager;
 
@@ -40,11 +39,12 @@ public class PreviewActivity2 extends AppCompatActivity {
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 ZoomImageView imageView = new ZoomImageView(container.getContext());
-                Log.e(TAG, "instantiateItem: " + urls[position]);
+
                 Glide.with(container.getContext())
                         .load(urls[position])
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(imageView);
+
                 container.addView(imageView);
                 mImageViews[position] = imageView;
                 return imageView;

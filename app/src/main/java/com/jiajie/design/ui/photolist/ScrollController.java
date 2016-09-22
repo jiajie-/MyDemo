@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.fragment;
+package com.jiajie.design.ui.photolist;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-class LoadDataScrollController extends RecyclerView.OnScrollListener
+class ScrollController extends RecyclerView.OnScrollListener
         implements SwipeRefreshLayout.OnRefreshListener {
 
     /**
@@ -32,10 +32,10 @@ class LoadDataScrollController extends RecyclerView.OnScrollListener
     /**
      * 回调接口
      */
-    private OnRecycleRefreshListener mListener;
+    private OnScrollListener mListener;
 
-    LoadDataScrollController(OnRecycleRefreshListener onRecycleRefreshListener) {
-        this.mListener = onRecycleRefreshListener;
+    ScrollController(OnScrollListener onScrollListener) {
+        this.mListener = onScrollListener;
     }
 
     @Override
@@ -135,7 +135,7 @@ class LoadDataScrollController extends RecyclerView.OnScrollListener
     /**
      * 数据加载接口回调
      */
-    interface OnRecycleRefreshListener {
+    interface OnScrollListener {
         void refresh();
 
         void loadMore();
