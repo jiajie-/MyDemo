@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.R;
+import com.jiajie.design.widgets.ZoomImageView;
 
 /**
  * PreviewActivity2

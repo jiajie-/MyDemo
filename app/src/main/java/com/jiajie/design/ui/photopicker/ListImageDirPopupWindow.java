@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.activity;
+package com.jiajie.design.ui.photopicker;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,7 +26,7 @@ import java.util.List;
  * ListImageDirPopupWindow
  * Created by jiajie on 16/9/12.
  */
-public class ListImageDirPopupWindow extends PopupWindow {
+class ListImageDirPopupWindow extends PopupWindow {
 
     private int mWidth;
     private int mHeight;
@@ -34,11 +34,11 @@ public class ListImageDirPopupWindow extends PopupWindow {
     private View mConvertView;
     private ListView mListView;
 
-    private List<FolderBean> mFolderList;
+    private List<Folder> mFolderList;
 
     private OnDirSelectedListener mListener;
 
-    public ListImageDirPopupWindow(Context context, List<FolderBean> folderList) {
+    ListImageDirPopupWindow(Context context, List<Folder> folderList) {
         super(context);
         calculateSize(context);
 
@@ -91,11 +91,11 @@ public class ListImageDirPopupWindow extends PopupWindow {
         mHeight = (int) (outMetrics.heightPixels * 0.7);
     }
 
-    private static class ListDirAdapter extends ArrayAdapter<FolderBean> {
+    private static class ListDirAdapter extends ArrayAdapter<Folder> {
 
         private LayoutInflater mInflater;
 
-        ListDirAdapter(Context context, List<FolderBean> objects) {
+        ListDirAdapter(Context context, List<Folder> objects) {
             super(context, 0, objects);
             mInflater = LayoutInflater.from(context);
         }
@@ -111,15 +111,14 @@ public class ListImageDirPopupWindow extends PopupWindow {
                 holder.mImage = (ImageView) convertView.findViewById(R.id.dir_item_image);
                 holder.mDirName = (TextView) convertView.findViewById(R.id.dir_item_name);
                 holder.mDirCount = (TextView) convertView.findViewById(R.id.dir_item_count);
-
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            FolderBean bean = getItem(position);
-            //reset
+            Folder bean = getItem(position);
 
+            //reset
             holder.mImage.setImageResource(R.drawable.pic_no);
 
             Glide.with(convertView.getContext())
@@ -133,7 +132,6 @@ public class ListImageDirPopupWindow extends PopupWindow {
             return convertView;
         }
 
-
         private static class ViewHolder {
             ImageView mImage;
             TextView mDirName;
@@ -141,11 +139,11 @@ public class ListImageDirPopupWindow extends PopupWindow {
         }
     }
 
-    public interface OnDirSelectedListener {
-        void onSelected(FolderBean folderBean);
+    interface OnDirSelectedListener {
+        void onSelected(Folder folder);
     }
 
-    public void setOnDirSelectedListener(OnDirSelectedListener mListener) {
+    void setOnDirSelectedListener(OnDirSelectedListener mListener) {
         this.mListener = mListener;
     }
 

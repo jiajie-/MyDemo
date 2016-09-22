@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.activity;
+package com.jiajie.design.ui.photopicker;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ImageAdapter extends BaseAdapter {
+class ImageAdapter extends BaseAdapter {
 
     private static Set<String> mSelectedImage = new HashSet<>();
 
@@ -25,11 +25,13 @@ public class ImageAdapter extends BaseAdapter {
     private List<String> mImagePaths;
     private LayoutInflater mInflater;
     private OnImageEventListener listener;
+    private int selectedColor;
 
-    public ImageAdapter(Context context, List<String> mDatas, String dirPath) {
+    ImageAdapter(Context context, List<String> mDatas, String dirPath) {
         this.mDirPath = dirPath;
         this.mImagePaths = mDatas;
         this.mInflater = LayoutInflater.from(context.getApplicationContext());
+        this.selectedColor = Color.parseColor("#77000000");
     }
 
     @Override
@@ -84,7 +86,7 @@ public class ImageAdapter extends BaseAdapter {
                 } else {
                     //未被选择
                     mSelectedImage.add(filePath);
-                    viewHolder.mImageView.setColorFilter(Color.parseColor("#77000000"));
+                    viewHolder.mImageView.setColorFilter(selectedColor);
                     viewHolder.mSelect.setImageResource(R.drawable.pic_selected);
                 }
             }
@@ -100,7 +102,7 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         if (mSelectedImage.contains(filePath)) {
-            viewHolder.mImageView.setColorFilter(Color.parseColor("#77000000"));
+            viewHolder.mImageView.setColorFilter(selectedColor);
             viewHolder.mSelect.setImageResource(R.drawable.pic_selected);
         }
 
@@ -112,11 +114,11 @@ public class ImageAdapter extends BaseAdapter {
         ImageButton mSelect;
     }
 
-    public interface OnImageEventListener {
+    interface OnImageEventListener {
         void onImageClick(String file);
     }
 
-    public void setOnImageEventListener(OnImageEventListener listener) {
+    void setOnImageEventListener(OnImageEventListener listener) {
         this.listener = listener;
     }
 }

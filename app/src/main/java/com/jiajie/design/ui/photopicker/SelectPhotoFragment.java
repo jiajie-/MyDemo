@@ -1,4 +1,4 @@
-package com.jiajie.design.ui.fragment;
+package com.jiajie.design.ui.photopicker;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -24,10 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiajie.design.R;
-import com.jiajie.design.preview.PreviewActivity;
-import com.jiajie.design.ui.activity.FolderBean;
-import com.jiajie.design.ui.activity.ImageAdapter;
-import com.jiajie.design.ui.activity.ListImageDirPopupWindow;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -59,20 +55,16 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
     private File mCurrentDir;
     private int mMaxCount;
 
-    private List<FolderBean> mFolderBeans = new ArrayList<>();
+    private List<Folder> mFolders = new ArrayList<>();
 
     private ProgressDialog mProgressDialog;
-
     private ListImageDirPopupWindow mPopupWindow;
-
     private MyHandler mHandler;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mHandler = new MyHandler(this);
-
     }
 
     @Nullable
@@ -101,7 +93,7 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
     }
 
     private void initDirPopupWindow() {
-        mPopupWindow = new ListImageDirPopupWindow(getActivity().getApplicationContext(), mFolderBeans);
+        mPopupWindow = new ListImageDirPopupWindow(getActivity().getApplicationContext(), mFolders);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -111,13 +103,13 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
 
         mPopupWindow.setOnDirSelectedListener(new ListImageDirPopupWindow.OnDirSelectedListener() {
             @Override
-            public void onSelected(FolderBean folderBean) {
-                if ((mCurrentDir.getPath()).equals(folderBean.getDir())) {
+            public void onSelected(Folder folder) {
+                if ((mCurrentDir.getPath()).equals(folder.getDir())) {
                     mPopupWindow.dismiss();
                     return;
                 }
 
-                mCurrentDir = new File(folderBean.getDir());
+                mCurrentDir = new File(folder.getDir());
 
                 mImages = Arrays.asList(mCurrentDir.list(filter));
 
@@ -127,7 +119,7 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
                 mGridView.setAdapter(mAdapter);
 
                 mDirCount.setText(String.valueOf(mImages.size()));
-                mDirName.setText(folderBean.getName());
+                mDirName.setText(folder.getName());
 
                 mPopupWindow.dismiss();
             }
@@ -227,23 +219,23 @@ public class SelectPhotoFragment extends Fragment implements ImageAdapter.OnImag
                     if (parentFile == null) continue;
 
                     String dirPath = parentFile.getAbsolutePath();
-                    FolderBean folderBean;
+                    Folder folder;
 
                     if (mDirPaths.contains(dirPath)) {
                         continue;
                     } else {
                         mDirPaths.add(dirPath);
-                        folderBean = new FolderBean();
-                        folderBean.setDir(dirPath);
-                        folderBean.setFirstImagePath(path);
+                        folder = new Folder();
+                        folder.setDir(dirPath);
+                        folder.setFirstImagePath(path);
                     }
 
                     if (parentFile.list() == null) continue;
 
                     int piCount = parentFile.list(filter).length;
 
-                    folderBean.setCount(piCount);
-                    mFolderBeans.add(folderBean);
+                    folder.setCount(piCount);
+                    mFolders.add(folder);
 
                     if (piCount > mMaxCount) {
                         mMaxCount = piCount;

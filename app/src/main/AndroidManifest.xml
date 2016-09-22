@@ -33,7 +33,7 @@
                 android:resource="@xml/searchable"/>
         </activity>
 
-        <activity android:name=".preview.PreviewActivity"/>
+        <activity android:name=".ui.photopicker.PreviewActivity"/>
         <activity android:name=".preview.PreviewActivity2"/>
 
         <activity

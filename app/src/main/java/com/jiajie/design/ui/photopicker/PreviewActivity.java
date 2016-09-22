@@ -1,11 +1,10 @@
-package com.jiajie.design.preview;
+package com.jiajie.design.ui.photopicker;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiajie.design.MyApplication;
 import com.jiajie.design.R;
+import com.jiajie.design.widgets.ZoomImageView;
 
 /**
  * PreviewActivity
@@ -42,7 +42,7 @@ public class PreviewActivity extends AppCompatActivity {
             public Object instantiateItem(ViewGroup container, int position) {
                 ZoomImageView imageView = new ZoomImageView(container.getContext());
                 String p = path + "/" + list[position];
-                Log.e(TAG, "instantiateItem: " + p);
+//                Log.e(TAG, "instantiateItem: " + p);
                 Glide.with(container.getContext())
                         .load(p)
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)

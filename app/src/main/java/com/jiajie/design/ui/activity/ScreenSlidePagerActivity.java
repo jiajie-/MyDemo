@@ -18,7 +18,7 @@ import com.jiajie.design.ui.fragment.BannerFragment;
 import com.jiajie.design.ui.fragment.BezierFragment;
 import com.jiajie.design.ui.fragment.GalleryFragment;
 import com.jiajie.design.ui.fragment.RadarFragment;
-import com.jiajie.design.ui.fragment.SelectPhotoFragment;
+import com.jiajie.design.ui.photopicker.SelectPhotoFragment;
 import com.jiajie.design.ui.fragment.SpeedViewFragment;
 
 import java.util.List;
