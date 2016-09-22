@@ -172,11 +172,18 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // 不让外层ViewPager拦截touch事件
+        // 让内层ViewPager(LoopView内的ViewPager)处理touch事件
+        mPager.requestDisallowInterceptTouchEvent(true);
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
-                Log.i(TAG, "onTouch: mCurrentPos " + mCurrentPos);
                 pauseLoop();
                 break;
             case MotionEvent.ACTION_UP:

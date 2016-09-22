@@ -10,6 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:bottomStyle="@integer/loop_have_desc"
-        app:rate="60"/>
+        app:rate="6"/>
 
 </LinearLayout>
