@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -97,7 +96,7 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
             imageView.setImageResource(R.drawable.loop_bg);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                     (ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.leftMargin = 2;
+            params.leftMargin = 7;
             if (mBottomStyle != DEF_BOTTOM_STYLE) {
                 mDesc.setVisibility(GONE);
             }
@@ -152,7 +151,7 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
     @Override
     public void onPageScrollStateChanged(int state) {
         switch (state) {
-            case ViewPager.SCROLL_STATE_IDLE://滑动完成
+            case ViewPager.SCROLL_STATE_IDLE:
                 if (mPager.getCurrentItem() == mAdapter.getCount() - 1 && !isChanged) {
                     mPager.setCurrentItem(0);
                 }
@@ -174,7 +173,7 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // 不让外层ViewPager拦截touch事件
-        // 让内层ViewPager(LoopView内的ViewPager)处理touch事件
+        // 也就是 让内层ViewPager(LoopView内的ViewPager)处理touch事件
         mPager.requestDisallowInterceptTouchEvent(true);
         return super.onInterceptTouchEvent(ev);
     }
@@ -235,14 +234,12 @@ public class LoopView extends RelativeLayout implements ViewPager.OnPageChangeLi
     }
 
     private void startLoop() {
-        Log.e(TAG, "startLoop: ");
         mScheduledService = Executors.newSingleThreadScheduledExecutor();
         mScheduledService.scheduleAtFixedRate(new AutoRunnable(this), mRate, mRate, TimeUnit.SECONDS);
     }
 
     private void pauseLoop() {
         if (!mScheduledService.isShutdown()) {
-            Log.e(TAG, "pauseLoop: shut down");
             mScheduledService.shutdown();
         }
     }

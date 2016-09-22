@@ -245,7 +245,7 @@ public class ThirdSpeedView extends SpeedView {
         centerY = mHeight / 2;
         mMarkTextRadius = centerY - getTextHeight("0", markTextPaint);//0,20,220 :the same height
 
-        //inside circle
+        //inside circle2
         mInsideCircleRadius = INSIDE_CIRCLE_SCALE * centerX;
         insideCircleRect.set(centerX - mInsideCircleRadius, centerY - mInsideCircleRadius,
                 centerX + mInsideCircleRadius, centerY + mInsideCircleRadius);
@@ -298,7 +298,7 @@ public class ThirdSpeedView extends SpeedView {
     protected void drawStaticSpeedView(Canvas canvas) {
         float backgroundCircleRadius = mWidth / 2f;
 
-        //background circle
+        //background circle2
         if (isWithBackgroundCircle()) {
             canvas.drawCircle(centerX, centerY, backgroundCircleRadius, backgroundCirclePaint);
         }
@@ -318,7 +318,7 @@ public class ThirdSpeedView extends SpeedView {
             scaleValue += 20;
         }
 
-        //inside circle
+        //inside circle2
         canvas.drawArc(insideCircleRect, MIN_DEGREE, (MAX_DEGREE - MIN_DEGREE),
                 false, insideCirclePaint);
 
@@ -361,7 +361,7 @@ public class ThirdSpeedView extends SpeedView {
         canvas.rotate(mDegree + 90f, centerX, centerY);
         canvas.drawPath(indicatorPath, indicatorPaint);
         canvas.restore();
-        //indicator circle
+        //indicator circle2
         canvas.drawCircle(centerX, centerY, indicatorCircleRadius, centerCirclePaint);
 
         //speed text

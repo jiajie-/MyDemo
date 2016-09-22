@@ -8,8 +8,8 @@
     <com.jiajie.design.widgets.loopview.LoopView
         android:id="@+id/loop_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:bottomStyle="@integer/loop_have_desc"
+        android:layout_height="150dp"
+        app:bottomStyle="@integer/loop_no_desc_center"
         app:rate="6"/>
 
 </LinearLayout>

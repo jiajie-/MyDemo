@@ -134,7 +134,7 @@
 //        float mediumArc = lowArc + 160f;
 //        float highArc = mediumArc + 75f;
 //
-//        //background circle
+//        //background circle2
 //        if (isWithBackgroundCircle()) {
 //            canvas.drawCircle(centerX, centerY, backgroundCircleRadius, circlePaint);
 //        }
@@ -172,7 +172,7 @@
 //        canvas.rotate(90f + degree, centerX, centerY);
 //        canvas.drawPath(indicatorPath, indicatorPaint);
 //        canvas.restore();
-//        //indicator circle
+//        //indicator circle2
 //        canvas.drawCircle(centerX, centerY, indicatorCircleRadius, centerCirclePaint);
 //
 //        //text and background
